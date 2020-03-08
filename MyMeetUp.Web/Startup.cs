@@ -12,6 +12,7 @@ using MyMeetUp.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MyMeetUp.Web.Configuration;
 
 namespace MyMeetUp.Web
 {
@@ -28,6 +29,7 @@ namespace MyMeetUp.Web
         //Development Configuration /////////////////////////////////////////////////////////////////
         public void ConfigureDevelopmentServices(IServiceCollection services) {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyMeetUpDb_Dev")));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings_Dev"));
             ConfigureServices(services);
         }
 
@@ -40,6 +42,7 @@ namespace MyMeetUp.Web
         //Production Configuration /////////////////////////////////////////////////////////////////
         public void ConfigureProductionServices(IServiceCollection services) {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyMeetUpDb_Prd")));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings_Prd"));
             ConfigureServices(services);
         }
         public void ConfigureProduction(IApplicationBuilder app, IWebHostEnvironment env) {
