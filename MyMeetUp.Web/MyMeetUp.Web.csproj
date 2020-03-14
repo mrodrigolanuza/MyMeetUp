@@ -5,6 +5,11 @@
     <UserSecretsId>aspnet-MyMeetUp.Web-670849D4-4F7C-44C2-AA21-ECD8DF2284D6</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20200314203951_CreateInitialAppDBSchema.cs" />
+    <Compile Remove="Data\Migrations\20200314203951_CreateInitialAppDBSchema.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.1" />

@@ -20,10 +20,10 @@ namespace MyMeetUp.Web.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
-
+            base.OnModelCreating(modelBuilder);
+            
             //Todas entidades tienen por defecto un Id como clave principal. 
             //Añado además un índice único en las tablas que lo requieran
-            
             modelBuilder.Entity<Group>()
                .HasIndex(g => g.Name)
                .IsUnique();
