@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyMeetUp.Web.Configuration;
+using MyMeetUp.Web.Models;
 
 namespace MyMeetUp.Web
 {
@@ -53,7 +54,8 @@ namespace MyMeetUp.Web
         
         //Services /////////////////////////////////////////////////////////////////////////////////
         public void ConfigureServices(IServiceCollection services) {
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<ApplicationUser>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
