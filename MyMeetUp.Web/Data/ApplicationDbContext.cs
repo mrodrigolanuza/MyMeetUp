@@ -14,7 +14,7 @@ namespace MyMeetUp.Web.Data
         public DbSet<Group> Groups { get; set; }
         public DbSet<Group_GroupCategory> Group_GroupCategories { get; set; }
         public DbSet<GroupCategory> GroupCategories { get; set; }
-        public DbSet<GroupMemberProfile> GetGroupMemberProfiles { get; set; }
+        public DbSet<GroupMemberProfile> GroupMemberProfiles { get; set; }
         public DbSet<GroupMembers> GroupMembers { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
