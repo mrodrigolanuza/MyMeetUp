@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyMeetUp.Web.Models
 {
-    public class Group_GrupCategory : BaseModel
+    public class Group_GroupCategory : BaseModel
     {
         [Required]
         public int GroupId { get; set; }
