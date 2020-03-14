@@ -14,7 +14,7 @@ namespace MyMeetUp.Web.Models
         public Event Event { get; set; }
         
         [Required]
-        public int EventAttendanceId { get; set; }
+        public int EventAttendanceStateId { get; set; }
         public EventAttendanceState EventAttendanceState { get; set; }
     }
 }
