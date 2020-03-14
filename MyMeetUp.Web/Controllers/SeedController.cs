@@ -14,7 +14,7 @@ namespace MyMeetUp.Web.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _applicationDbContext;
 
-        public SeedController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext applicationDbContext, IAzureFileStorage azureFileStorage, IAzureBlobManager azureBlob) {
+        public SeedController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext applicationDbContext) {
             _userManager = userManager;
             _roleManager = roleManager;
             _applicationDbContext = applicationDbContext;
