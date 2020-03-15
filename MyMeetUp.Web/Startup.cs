@@ -35,6 +35,7 @@ namespace MyMeetUp.Web
         }
 
         public void ConfigureDevelopment(IApplicationBuilder app, IWebHostEnvironment env) {
+            env.ApplicationName = $"{_applicationName} [Development]";
             app.UseDeveloperExceptionPage();
             app.UseDatabaseErrorPage();
             Configure(app, env);
@@ -47,6 +48,7 @@ namespace MyMeetUp.Web
             ConfigureServices(services);
         }
         public void ConfigureProduction(IApplicationBuilder app, IWebHostEnvironment env) {
+            env.ApplicationName = $"{_applicationName}";
             app.UseExceptionHandler("/Home/Error");
             app.UseHsts();      // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             Configure(app, env);
