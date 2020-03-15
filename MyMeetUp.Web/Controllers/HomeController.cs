@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using MyMeetUp.Web.Configuration;
 using MyMeetUp.Web.Models;
 
 namespace MyMeetUp.Web.Controllers
@@ -12,9 +14,11 @@ namespace MyMeetUp.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IOptions<AppSettings> _appSettings;
 
-        public HomeController(ILogger<HomeController> logger) {
+        public HomeController(ILogger<HomeController> logger, IOptions<AppSettings> appSettings) {
             _logger = logger;
+            _appSettings = appSettings;
         }
 
         public IActionResult Index() {
@@ -22,6 +26,7 @@ namespace MyMeetUp.Web.Controllers
         }
 
         public IActionResult Privacy() {
+            ViewBag.EmailSupport = _appSettings.Value.EmailSupport;
             return View();
         }
 

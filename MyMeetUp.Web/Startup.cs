@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyMeetUp.Web.Configuration;
 using MyMeetUp.Web.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace MyMeetUp.Web
 {
@@ -56,6 +57,12 @@ namespace MyMeetUp.Web
         
         //Services /////////////////////////////////////////////////////////////////////////////////
         public void ConfigureServices(IServiceCollection services) {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                //Función lambda que determina si es necesario el consentimiento del usuario para cookies no necesarias. 
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -68,6 +75,7 @@ namespace MyMeetUp.Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCookiePolicy();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
