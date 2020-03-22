@@ -1,8 +1,155 @@
 ﻿@{
-    ViewData["Title"] = "Admin Home Page";
+    ViewData["Title"] = "Area Administración";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Área Administración</p>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <!--<li class="breadcrumb-item"><a href="#">Area Administración</a></li>-->
+        <li class="breadcrumb-item active" aria-current="page">Área Administración</li>
+    </ol>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="card-deck">
+            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                <div class="card-header">GRUPOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de grupos</h5><br>
+                    <p class="card-text">Configuración de todas las funcionalidades relacionadas con la entidad de Grupo</p>
+                    <a href="#" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                <div class="card-header">CATEGORÍAS DE GRUPOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de categorías de grupo</h5>
+                    <p class="card-text">Crear, eliminar y actualizar las diferentes categorías de grupos existentes</p>
+                    <a href="#" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card-deck">
+            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                <div class="card-header">EVENTOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de eventos</h5><br>
+                    <p class="card-text">Configuración de todas las funcionalidades relacionadas con la entidad de Evento</p>
+                    <a href="#" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                <div class="card-header">CATEGORÍAS DE EVENTOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de categorías de evento</h5>
+                    <p class="card-text">Crear, eliminar y actualizar las diferentes categorías de eventos existentes</p>
+                    <a href="#" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                <div class="card-header">COMENTARIOS DE EVENTOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de los comentarios de evento</h5>
+                    <p class="card-text">Crear, eliminar y actualizar los diferentes comentarios asociados a un envento</p>
+                    <a href="#" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card-deck">
+            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                <div class="card-header">USUARIOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de usuarios registrados</h5>
+                    <p class="card-text">Crear, eliminar y actualizar los diferentes usuarios registrados en el sistema</p>
+                    <a href="#" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                <div class="card-header">ROLES</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de los roles de la aplicación</h5>
+                    <p class="card-text">Crear, eliminar y actualizar los diferentes roles que participan en la aplicación</p>
+                    <a href="#" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<!--
+    <div class="container">
+        <div class="row">
+            <div class="card-deck">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Grupos</h5>
+                        <p class="card-text">Permite administrar los grupos existentes</p>
+                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Eventos</h5>
+                        <p class="card-text">Permite administrar los eventos existentes</p>
+                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Categorias de Evento</h5>
+                        <p class="card-text">Permite adminitrar las categorias de eventos</p>
+                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Grupos</h5>
+                        <p class="card-text">Permite administrar los grupos existentes</p>
+                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Grupos</h5>
+                        <p class="card-text">Permite administrar los grupos existentes</p>
+                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Grupos</h5>
+                        <p class="card-text">Permite administrar los grupos existentes</p>
+                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Grupos</h5>
+                        <p class="card-text">Permite administrar los grupos existentes</p>
+                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Grupos</h5>
+                        <p class="card-text">Permite administrar los grupos existentes</p>
+                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+-->
