@@ -1,43 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyMeetUp.Web.Data;
 using MyMeetUp.Web.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyMeetUp.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = RolesData.Administrator)]
     public class GroupCategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public GroupCategoriesController(ApplicationDbContext context)
-        {
+        public GroupCategoriesController(ApplicationDbContext context) {
             _context = context;
         }
 
         // GET: Admin/GroupCategories
-        public async Task<IActionResult> Index()
-        {
+        public async Task<IActionResult> Index() {
             return View(await _context.GroupCategories.ToListAsync());
         }
 
         // GET: Admin/GroupCategories/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Details(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var groupCategory = await _context.GroupCategories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (groupCategory == null)
-            {
+            if (groupCategory == null) {
                 return NotFound();
             }
 
@@ -45,8 +39,7 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
         }
 
         // GET: Admin/GroupCategories/Create
-        public IActionResult Create()
-        {
+        public IActionResult Create() {
             return View();
         }
 
@@ -55,10 +48,8 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Id")] GroupCategory groupCategory)
-        {
-            if (ModelState.IsValid)
-            {
+        public async Task<IActionResult> Create([Bind("Name,Id")] GroupCategory groupCategory) {
+            if (ModelState.IsValid) {
                 _context.Add(groupCategory);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -67,16 +58,13 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
         }
 
         // GET: Admin/GroupCategories/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var groupCategory = await _context.GroupCategories.FindAsync(id);
-            if (groupCategory == null)
-            {
+            if (groupCategory == null) {
                 return NotFound();
             }
             return View(groupCategory);
@@ -87,28 +75,20 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Id")] GroupCategory groupCategory)
-        {
-            if (id != groupCategory.Id)
-            {
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Id")] GroupCategory groupCategory) {
+            if (id != groupCategory.Id) {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            if (ModelState.IsValid) {
+                try {
                     _context.Update(groupCategory);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GroupCategoryExists(groupCategory.Id))
-                    {
+                } catch (DbUpdateConcurrencyException) {
+                    if (!GroupCategoryExists(groupCategory.Id)) {
                         return NotFound();
                     }
-                    else
-                    {
+                    else {
                         throw;
                     }
                 }
@@ -118,17 +98,14 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
         }
 
         // GET: Admin/GroupCategories/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
+        public async Task<IActionResult> Delete(int? id) {
+            if (id == null) {
                 return NotFound();
             }
 
             var groupCategory = await _context.GroupCategories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (groupCategory == null)
-            {
+            if (groupCategory == null) {
                 return NotFound();
             }
 
@@ -138,16 +115,14 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
         // POST: Admin/GroupCategories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
+        public async Task<IActionResult> DeleteConfirmed(int id) {
             var groupCategory = await _context.GroupCategories.FindAsync(id);
             _context.GroupCategories.Remove(groupCategory);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GroupCategoryExists(int id)
-        {
+        private bool GroupCategoryExists(int id) {
             return _context.GroupCategories.Any(e => e.Id == id);
         }
     }
