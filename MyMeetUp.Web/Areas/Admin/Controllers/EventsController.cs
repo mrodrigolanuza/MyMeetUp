@@ -45,7 +45,7 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
         // GET: Admin/Events/Create
         public IActionResult Create() {
             ViewData["EventCategoryId"] = new SelectList(_context.EventCategories, "Id", "Name");
-            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "AboutUs");
+            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name");
             return View();
         }
 
@@ -61,7 +61,7 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["EventCategoryId"] = new SelectList(_context.EventCategories, "Id", "Name", @event.EventCategoryId);
-            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "AboutUs", @event.GroupId);
+            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name", @event.GroupId);
             return View(@event);
         }
 
@@ -76,7 +76,7 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
                 return NotFound();
             }
             ViewData["EventCategoryId"] = new SelectList(_context.EventCategories, "Id", "Name", @event.EventCategoryId);
-            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "AboutUs", @event.GroupId);
+            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name", @event.GroupId);
             return View(@event);
         }
 
@@ -105,7 +105,7 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["EventCategoryId"] = new SelectList(_context.EventCategories, "Id", "Name", @event.EventCategoryId);
-            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "AboutUs", @event.GroupId);
+            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name", @event.GroupId);
             return View(@event);
         }
 

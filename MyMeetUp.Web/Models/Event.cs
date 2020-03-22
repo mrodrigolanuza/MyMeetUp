@@ -33,10 +33,12 @@ namespace MyMeetUp.Web.Models
 
         //Foreign Keys
         [Required]
+        [Display(Name = "Grupo")]
         public int GroupId { get; set; }
         public Group Group { get; set; }
 
         [Required]
+        [Display(Name = "Categoría")]
         public int EventCategoryId { get; set; }
         public EventCategory EventCategory { get; set; }
     }
