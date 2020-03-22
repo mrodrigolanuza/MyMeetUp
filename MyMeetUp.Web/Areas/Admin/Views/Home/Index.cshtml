@@ -9,18 +9,18 @@
     </ol>
 </nav>
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div class="card-deck">
-            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+            <div class="card text-white bg-dark mb-3">
                 <div class="card-header">GRUPOS</div>
                 <div class="card-body">
-                    <h5 class="card-title">Administración de grupos</h5><br>
+                    <h5 class="card-title">Administración de grupos</h5>
                     <p class="card-text">Configuración de todas las funcionalidades relacionadas con la entidad de Grupo</p>
-                    <a href="#" class="btn btn-primary">Acceder</a>
+                    <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary">Acceder</a>
                 </div>
             </div>
-            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+            <div class="card text-white bg-dark mb-3">
                 <div class="card-header">CATEGORÍAS DE GRUPOS</div>
                 <div class="card-body">
                     <h5 class="card-title">Administración de categorías de grupo</h5>
@@ -28,128 +28,62 @@
                     <a asp-area="Admin" asp-controller="GroupCategories" asp-action="Index" class="btn btn-primary">Acceder</a>
                 </div>
             </div>
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">PERFILES DE MIEMBROS EN UN GRUPO</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de perfiles de miembros de grupo</h5>
+                    <p class="card-text">Crear, eliminar y actualizar las diferentes perfiles que puede tener un miembro de un grupo</p>
+                    <a asp-area="Admin" asp-controller="GroupMemberProfiles" asp-action="Index" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="card-deck">
-            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+            <div class="card text-white bg-dark mb-3">
                 <div class="card-header">EVENTOS</div>
                 <div class="card-body">
-                    <h5 class="card-title">Administración de eventos</h5><br>
+                    <h5 class="card-title">Administración de eventos</h5>
                     <p class="card-text">Configuración de todas las funcionalidades relacionadas con la entidad de Evento</p>
-                    <a href="#" class="btn btn-primary">Acceder</a>
+                    <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary">Acceder</a>
                 </div>
             </div>
-            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+            <div class="card text-white bg-dark mb-3">
                 <div class="card-header">CATEGORÍAS DE EVENTOS</div>
                 <div class="card-body">
                     <h5 class="card-title">Administración de categorías de evento</h5>
                     <p class="card-text">Crear, eliminar y actualizar las diferentes categorías de eventos existentes</p>
-                    <a href="#" class="btn btn-primary">Acceder</a>
+                    <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary">Acceder</a>
                 </div>
             </div>
-            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+            <div class="card text-white bg-dark mb-3">
                 <div class="card-header">COMENTARIOS DE EVENTOS</div>
                 <div class="card-body">
                     <h5 class="card-title">Administración de los comentarios de evento</h5>
                     <p class="card-text">Crear, eliminar y actualizar los diferentes comentarios asociados a un envento</p>
-                    <a href="#" class="btn btn-primary">Acceder</a>
+                    <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary">Acceder</a>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="card-deck">
-            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+            <div class="card text-white bg-dark mb-3">
                 <div class="card-header">USUARIOS</div>
                 <div class="card-body">
                     <h5 class="card-title">Administración de usuarios registrados</h5>
                     <p class="card-text">Crear, eliminar y actualizar los diferentes usuarios registrados en el sistema</p>
-                    <a href="#" class="btn btn-primary">Acceder</a>
+                    <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary">Acceder</a>
                 </div>
             </div>
-            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+            <div class="card text-white bg-dark mb-3">
                 <div class="card-header">ROLES</div>
                 <div class="card-body">
                     <h5 class="card-title">Administración de los roles de la aplicación</h5>
                     <p class="card-text">Crear, eliminar y actualizar los diferentes roles que participan en la aplicación</p>
-                    <a href="#" class="btn btn-primary">Acceder</a>
+                    <a asp-area="" asp-controller="" asp-action="" class="btn btn-primary">Acceder</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-<!--
-    <div class="container">
-        <div class="row">
-            <div class="card-deck">
-                <div class="card">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Grupos</h5>
-                        <p class="card-text">Permite administrar los grupos existentes</p>
-                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Eventos</h5>
-                        <p class="card-text">Permite administrar los eventos existentes</p>
-                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Categorias de Evento</h5>
-                        <p class="card-text">Permite adminitrar las categorias de eventos</p>
-                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Grupos</h5>
-                        <p class="card-text">Permite administrar los grupos existentes</p>
-                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Grupos</h5>
-                        <p class="card-text">Permite administrar los grupos existentes</p>
-                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Grupos</h5>
-                        <p class="card-text">Permite administrar los grupos existentes</p>
-                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Grupos</h5>
-                        <p class="card-text">Permite administrar los grupos existentes</p>
-                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Grupos</h5>
-                        <p class="card-text">Permite administrar los grupos existentes</p>
-                        <p class="card-text"><small class="text-muted">Crear / Modificar / Borrar</small></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
--->
