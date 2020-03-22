@@ -10,14 +10,17 @@ namespace MyMeetUp.Web.Models
         [StringLength(250)]
         [Display(Name = "Comentario")]
         public string Text { get; set; }
+        [Display(Name = "Fecha Publicación")]
         public DateTime PublicationDate { get; set; }
 
         //ForeignKeys
         [Required]
+        [Display(Name = "Usuario")]
         public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
 
         [Required]
+        [Display(Name = "Evento")]
         public int EventId { get; set; }
         public Event Event { get; set; }
 
