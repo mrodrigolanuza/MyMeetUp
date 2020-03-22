@@ -10,82 +10,82 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = RolesData.Administrator)]
-    public class EventCategoriesController : Controller
+    public class EventAttendanceStatesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public EventCategoriesController(ApplicationDbContext context) {
+        public EventAttendanceStatesController(ApplicationDbContext context) {
             _context = context;
         }
 
-        // GET: Admin/EventCategories
+        // GET: Admin/EventAttendanceStates
         public async Task<IActionResult> Index() {
-            return View(await _context.EventCategories.ToListAsync());
+            return View(await _context.EventAttendanceStates.ToListAsync());
         }
 
-        // GET: Admin/EventCategories/Details/5
+        // GET: Admin/EventAttendanceStates/Details/5
         public async Task<IActionResult> Details(int? id) {
             if (id == null) {
                 return NotFound();
             }
 
-            var eventCategory = await _context.EventCategories
+            var eventAttendanceState = await _context.EventAttendanceStates
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (eventCategory == null) {
+            if (eventAttendanceState == null) {
                 return NotFound();
             }
 
-            return View(eventCategory);
+            return View(eventAttendanceState);
         }
 
-        // GET: Admin/EventCategories/Create
+        // GET: Admin/EventAttendanceStates/Create
         public IActionResult Create() {
             return View();
         }
 
-        // POST: Admin/EventCategories/Create
+        // POST: Admin/EventAttendanceStates/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Id")] EventCategory eventCategory) {
+        public async Task<IActionResult> Create([Bind("State,Id")] EventAttendanceState eventAttendanceState) {
             if (ModelState.IsValid) {
-                _context.Add(eventCategory);
+                _context.Add(eventAttendanceState);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(eventCategory);
+            return View(eventAttendanceState);
         }
 
-        // GET: Admin/EventCategories/Edit/5
+        // GET: Admin/EventAttendanceStates/Edit/5
         public async Task<IActionResult> Edit(int? id) {
             if (id == null) {
                 return NotFound();
             }
 
-            var eventCategory = await _context.EventCategories.FindAsync(id);
-            if (eventCategory == null) {
+            var eventAttendanceState = await _context.EventAttendanceStates.FindAsync(id);
+            if (eventAttendanceState == null) {
                 return NotFound();
             }
-            return View(eventCategory);
+            return View(eventAttendanceState);
         }
 
-        // POST: Admin/EventCategories/Edit/5
+        // POST: Admin/EventAttendanceStates/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Id")] EventCategory eventCategory) {
-            if (id != eventCategory.Id) {
+        public async Task<IActionResult> Edit(int id, [Bind("State,Id")] EventAttendanceState eventAttendanceState) {
+            if (id != eventAttendanceState.Id) {
                 return NotFound();
             }
 
             if (ModelState.IsValid) {
                 try {
-                    _context.Update(eventCategory);
+                    _context.Update(eventAttendanceState);
                     await _context.SaveChangesAsync();
                 } catch (DbUpdateConcurrencyException) {
-                    if (!EventCategoryExists(eventCategory.Id)) {
+                    if (!EventAttendanceStateExists(eventAttendanceState.Id)) {
                         return NotFound();
                     }
                     else {
@@ -94,36 +94,36 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(eventCategory);
+            return View(eventAttendanceState);
         }
 
-        // GET: Admin/EventCategories/Delete/5
+        // GET: Admin/EventAttendanceStates/Delete/5
         public async Task<IActionResult> Delete(int? id) {
             if (id == null) {
                 return NotFound();
             }
 
-            var eventCategory = await _context.EventCategories
+            var eventAttendanceState = await _context.EventAttendanceStates
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (eventCategory == null) {
+            if (eventAttendanceState == null) {
                 return NotFound();
             }
 
-            return View(eventCategory);
+            return View(eventAttendanceState);
         }
 
-        // POST: Admin/EventCategories/Delete/5
+        // POST: Admin/EventAttendanceStates/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id) {
-            var eventCategory = await _context.EventCategories.FindAsync(id);
-            _context.EventCategories.Remove(eventCategory);
+            var eventAttendanceState = await _context.EventAttendanceStates.FindAsync(id);
+            _context.EventAttendanceStates.Remove(eventAttendanceState);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EventCategoryExists(int id) {
-            return _context.EventCategories.Any(e => e.Id == id);
+        private bool EventAttendanceStateExists(int id) {
+            return _context.EventAttendanceStates.Any(e => e.Id == id);
         }
     }
 }
