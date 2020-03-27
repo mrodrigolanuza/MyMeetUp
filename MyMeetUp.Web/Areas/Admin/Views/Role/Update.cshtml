@@ -1,0 +1,50 @@
+﻿@model MyMeetUp.Web.Models.RoleModel.RoleEdit
+
+@{
+    ViewData["Title"] = "Update";
+}
+
+<h1 class="bg-info text-white">Rol '@Model.Role.Name'</h1>
+<a asp-action="Index" class="btn btn-secondary">Atrás</a>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form method="post">
+    <input type="hidden" name="roleName" value="@Model.Role.Name" />
+    <input type="hidden" name="roleId" value="@Model.Role.Id" />
+
+    <h2 class="bg-info p-1 text-white">Usuarios sin este rol:</h2>
+    <table class="table table-bordered table-sm">
+        @if (Model.NonMembers.Count() == 0) {
+            <tr><td colspan="2">Todos los usuarios son miembros</td></tr>
+        }
+        else {
+            @foreach (ApplicationUser user in Model.NonMembers) {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>
+                        <input type="checkbox" name="AddIds" value="@user.Id">
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+
+    <h2 class="bg-info p-1 text-white">Usuarios con este rol:</h2>
+    <table class="table table-bordered table-sm">
+        @if (Model.Members.Count() == 0) {
+            <tr><td colspan="2">Ningún usuario es miembro</td></tr>
+        }
+        else {
+            @foreach (ApplicationUser user in Model.Members) {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>
+                        <input type="checkbox" name="DeleteIds" value="@user.Id">
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
