@@ -1,0 +1,42 @@
+﻿@using MyMeetUp.Web.Areas.Admin.ViewModels
+@model IEnumerable<ApplicationUserIndexViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="bg-dark text-white">Listado Usuarios</h1>
+<a asp-action="Create" class="btn btn-secondary" style="border-bottom-width: 1px; margin-bottom: 20px; margin-top: 20px;">Crear nuevo Usuario</a>
+
+<table class="table table-sm table-striped table-bordered datatable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Email</th>
+            <th>LinkedIn</th>
+            <th>DNI</th>
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ApplicationUserIndexViewModel user in Model) {
+            <tr>
+                <td>@user.Name</td>
+                <td>@user.Surname</td>
+                <td>@user.Email</td>
+                <td>@user.LinkedIn</td>
+                <td>@user.DNI</td>
+                <td><a class="btn btn-sm btn-primary" asp-action="Update" asp-route-id="@user.Id">Update</a></td>
+                <td>
+                    <form asp-action="Delete" asp-route-id="@user.Id" method="post">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
