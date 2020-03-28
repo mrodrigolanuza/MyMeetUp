@@ -134,5 +134,23 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
             user.EntryDate = DateTime.Now;
             return user;
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id) {
+            ApplicationUser user = await _userManager.FindByIdAsync(id);
+
+            if(user is null) {
+                ModelState.AddModelError("", "Usuario no encontrado");
+                return RedirectToAction("Index");
+            }
+
+            IdentityResult result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded) {
+                foreach (IdentityError error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+            }
+            
+            return RedirectToAction("Index");
+        }
     }
 }
