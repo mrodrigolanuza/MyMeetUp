@@ -49,5 +49,40 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
             }
             return Users;
         }
+
+        public ViewResult Create() {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(ApplicationUserCreateViewModel modelViewUser) {
+            if (ModelState.IsValid) {
+                ApplicationUser user = AdaptApplicationUserFromCreateViewModel(modelViewUser);
+                var result = await _userManager.CreateAsync(user, modelViewUser.Password);
+                if (result.Succeeded)
+                    return RedirectToAction("Index");
+                else {
+                    foreach (IdentityError error in result.Errors)
+                        ModelState.AddModelError("", error.Description);
+                }
+            }
+            
+            return View(modelViewUser);
+        }
+
+        private ApplicationUser AdaptApplicationUserFromCreateViewModel(ApplicationUserCreateViewModel modelViewUser) {
+            var user = new ApplicationUser();
+            user.Name = modelViewUser.Name;
+            user.UserName = modelViewUser.Name;
+            user.Surname = modelViewUser.Surname;
+            user.Email = modelViewUser.Email;
+            user.LinkedIn = modelViewUser.LinkedIn;
+            user.DNI = modelViewUser.DNI;
+            user.Phone = modelViewUser.Phone;
+            user.City = modelViewUser.City;
+            user.Country = modelViewUser.Country;
+            user.EntryDate = DateTime.Now;
+            return user;
+        }
     }
 }
