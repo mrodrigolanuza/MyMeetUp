@@ -84,5 +84,55 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
             user.EntryDate = DateTime.Now;
             return user;
         }
+
+        public async Task<IActionResult> Update(string id) {
+            ApplicationUser user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return RedirectToAction("Index");
+
+            ApplicationUserUpdateViewModel updatedUser = new ApplicationUserUpdateViewModel();
+            updatedUser.Id = user.Id;
+            updatedUser.Name = user.UserName;
+            updatedUser.Surname = user.Surname;
+            updatedUser.Email = user.Email;
+            updatedUser.LinkedIn = user.LinkedIn;
+            updatedUser.DNI = user.DNI;
+            updatedUser.Phone = user.Phone;
+            updatedUser.City = user.City;
+            updatedUser.Country = user.Country;
+            
+            return View(updatedUser);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(ApplicationUserUpdateViewModel modelViewUser) {
+            if (ModelState.IsValid) {
+                ApplicationUser user = await _userManager.FindByIdAsync(modelViewUser.Id);
+                if (user == null)
+                    return RedirectToAction("Index");
+
+                user = AdaptApplicationUserFromUpdateViewModel(user, modelViewUser);
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded) {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(modelViewUser);
+        }
+
+        private ApplicationUser AdaptApplicationUserFromUpdateViewModel(ApplicationUser user, ApplicationUserUpdateViewModel modelViewUser) {
+            user.Id = modelViewUser.Id;
+            user.Name = modelViewUser.Name;
+            user.UserName = modelViewUser.Name;
+            user.Surname = modelViewUser.Surname;
+            user.Email = modelViewUser.Email;
+            user.LinkedIn = modelViewUser.LinkedIn;
+            user.DNI = modelViewUser.DNI;
+            user.Phone = modelViewUser.Phone;
+            user.City = modelViewUser.City;
+            user.Country = modelViewUser.Country;
+            user.EntryDate = DateTime.Now;
+            return user;
+        }
     }
 }
