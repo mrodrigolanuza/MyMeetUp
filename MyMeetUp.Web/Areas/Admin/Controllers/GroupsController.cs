@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MyMeetUp.Web.Data;
 using MyMeetUp.Web.Models;
 using System.Linq;
@@ -13,9 +14,11 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
     public class GroupsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger _logger;
 
-        public GroupsController(ApplicationDbContext context) {
+        public GroupsController(ILogger<GroupsController> logger, ApplicationDbContext context) {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Admin/Groups
