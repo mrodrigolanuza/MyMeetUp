@@ -1,4 +1,5 @@
-﻿@{
+﻿@model HomeIndexViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -48,38 +49,16 @@
     </div>
     <div class="row" style="border-bottom-width: 1px; margin-bottom: 20px; margin-top: 20px;">
         <div class="card-deck">
-            <div class="card bg-light mb-3" style="max-width: 18rem;">
-                <img src="~/img/LandPage/Groups/Group.png" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Dotnetters</h5>
-                    <p class="card-text">Esta es una descripción del grupo, lo que hace, y cuales son sus interesas más destacados.</p>
-                    <p class="card-text"><small class="text-muted">Proximo evento 09/05/2020</small></p>
+            @foreach (Group group in Model.Groups) {
+                <div class="card bg-light mb-3" style="max-width: 18rem;">
+                    <img src="~/img/LandPage/Groups/Group.png" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">@group.Name</h5>
+                        <p class="card-text">@group.AboutUs</p>
+                        <p class="card-text"><small class="text-muted">@($"{group.Country} / {group.City}") </small></p>
+                    </div>
                 </div>
-            </div>
-            <div class="card bg-light mb-3" style="max-width: 18rem;">
-                <img src="~/img/LandPage/Groups/Group.png" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Dotnetters</h5>
-                    <p class="card-text">Esta es una descripción del grupo, lo que hace, y cuales son sus interesas más destacados.</p>
-                    <p class="card-text"><small class="text-muted">Proximo evento 09/05/2020</small></p>
-                </div>
-            </div>
-            <div class="card bg-light mb-3" style="max-width: 18rem;">
-                <img src="~/img/LandPage/Groups/Group.png" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Dotnetters</h5>
-                    <p class="card-text">Esta es una descripción del grupo, lo que hace, y cuales son sus interesas más destacados.</p>
-                    <p class="card-text"><small class="text-muted">Proximo evento 09/05/2020</small></p>
-                </div>
-            </div>
-            <div class="card bg-light mb-3" style="max-width: 18rem;">
-                <img src="~/img/LandPage/Groups/Group.png" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Dotnetters</h5>
-                    <p class="card-text">Esta es una descripción del grupo, lo que hace, y cuales son sus interesas más destacados.</p>
-                    <p class="card-text"><small class="text-muted">Proximo evento 09/05/2020</small></p>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </div>
@@ -91,38 +70,16 @@
     </div>
     <div class="row" style="border-bottom-width: 1px; margin-bottom: 20px; margin-top: 20px;">
         <div class="card-deck">
-            <div class="card mb-3" style="max-width: 15rem;">
-                <div class="card-header text-center">
-                    Naturaleza
+            @foreach (GroupCategory groupCategory in Model.GroupCategories) {
+                <div class="card mb-3" style="max-width: 15rem;">
+                    <div class="card-header text-center">
+                        @groupCategory.Name
+                    </div>
+                    <div class="card-body">
+                        <img src="~/img/LandPage/Groups/Group.png" class="card-img-top" alt="...">
+                    </div>
                 </div>
-                <div class="card-body">
-                    <img src="~/img/LandPage/Groups/Group.png" class="card-img-top" alt="...">
-                </div>
-            </div>
-            <div class="card mb-3" style="max-width: 15rem;">
-                <div class="card-header text-center">
-                    Naturaleza
-                </div>
-                <div class="card-body">
-                    <img src="~/img/LandPage/Groups/Group.png" class="card-img-top" alt="...">
-                </div>
-            </div>
-            <div class="card mb-3" style="max-width: 15rem;">
-                <div class="card-header text-center">
-                    Naturaleza
-                </div>
-                <div class="card-body">
-                    <img src="~/img/LandPage/Groups/Group.png" class="card-img-top" alt="...">
-                </div>
-            </div>
-            <div class="card mb-3" style="max-width: 15rem;">
-                <div class="card-header text-center">
-                    Naturaleza
-                </div>
-                <div class="card-body">
-                    <img src="~/img/LandPage/Groups/Group.png" class="card-img-top" alt="...">
-                </div>
-            </div>
+            }
         </div>
     </div>
 </div>
