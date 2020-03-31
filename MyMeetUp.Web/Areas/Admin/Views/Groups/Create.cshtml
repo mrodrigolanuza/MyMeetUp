@@ -1,4 +1,4 @@
-﻿@model MyMeetUp.Web.Models.Group
+﻿@model MyMeetUp.Web.Areas.Admin.ViewModels.GroupCreateViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -13,34 +13,40 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="@Model.Group.Name" class="control-label"></label>
+                <input asp-for="@Model.Group.Name" class="form-control" />
+                <span asp-validation-for="@Model.Group.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AboutUs" class="control-label"></label>
-                <input asp-for="AboutUs" class="form-control" />
-                <span asp-validation-for="AboutUs" class="text-danger"></span>
+                <label asp-for="@Model.Group.AboutUs" class="control-label"></label>
+                <input asp-for="@Model.Group.AboutUs" class="form-control" />
+                <span asp-validation-for="@Model.Group.AboutUs" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Country" class="control-label"></label>
-                <input asp-for="Country" class="form-control" />
-                <span asp-validation-for="Country" class="text-danger"></span>
+                <div class="col">
+                    <label asp-for="GroupCategories" class="control-label row"></label>
+                    <select class="row" asp-for="@Model.GroupCategories" type="text" name="GroupCategories" id="GroupCategories" asp-items="@ViewBag.GrupoCategories"></select>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
+                <label asp-for="@Model.Group.Country" class="control-label"></label>
+                <input asp-for="@Model.Group.Country" class="form-control" />
+                <span asp-validation-for="@Model.Group.Country" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CreationDate" class="control-label"></label>
-                <input asp-for="CreationDate" class="form-control" />
-                <span asp-validation-for="CreationDate" class="text-danger"></span>
+                <label asp-for="@Model.Group.City" class="control-label"></label>
+                <input asp-for="@Model.Group.City" class="form-control" />
+                <span asp-validation-for="@Model.Group.City" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FinalizationDate" class="control-label"></label>
-                <input asp-for="FinalizationDate" class="form-control" />
-                <span asp-validation-for="FinalizationDate" class="text-danger"></span>
+                <label asp-for="@Model.Group.CreationDate" class="control-label"></label>
+                <input asp-for="@Model.Group.CreationDate" class="form-control" />
+                <span asp-validation-for="@Model.Group.CreationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Group.FinalizationDate" class="control-label"></label>
+                <input asp-for="@Model.Group.FinalizationDate" class="form-control" />
+                <span asp-validation-for="@Model.Group.FinalizationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

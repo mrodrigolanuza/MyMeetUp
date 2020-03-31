@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MyMeetUp.Web.Areas.Admin.ViewModels;
 using MyMeetUp.Web.Data;
 using MyMeetUp.Web.Models;
 using System.Linq;
@@ -43,6 +45,7 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
 
         // GET: Admin/Groups/Create
         public IActionResult Create() {
+            ViewData["GrupoCategories"] = new SelectList(_context.GroupCategories, "Id", "Name");
             return View();
         }
 
@@ -51,13 +54,27 @@ namespace MyMeetUp.Web.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,AboutUs,Country,City,CreationDate,FinalizationDate,Id")] Group @group) {
+        public async Task<IActionResult> Create(GroupCreateViewModel groupCreateViewModel) {
             if (ModelState.IsValid) {
-                _context.Add(@group);
+
+                //Create Group
+                _context.Groups.Add(groupCreateViewModel.Group);
+                await _context.SaveChangesAsync();
+                
+                //Create Group-Categories relations
+                Group newGroupCreated = await _context.Groups.Where(g => g.Name == groupCreateViewModel.Group.Name).FirstOrDefaultAsync();
+                foreach (int idCategoryGroup in groupCreateViewModel.GroupCategories) {
+                    Group_GroupCategory groupCategories = new Group_GroupCategory
+                    {
+                        GroupId = newGroupCreated.Id,
+                        GroupCategoryId = idCategoryGroup
+                    };
+                    _context.Group_GroupCategories.Add(groupCategories);
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(@group);
+            return View(groupCreateViewModel);
         }
 
         // GET: Admin/Groups/Edit/5

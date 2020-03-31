@@ -1,6 +1,7 @@
 ﻿using System;
 using MyMeetUp.Web.Models.Shared;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace MyMeetUp.Web.Models
 {
@@ -31,5 +32,7 @@ namespace MyMeetUp.Web.Models
         
         [Display(Name = "Fecha Baja")]
         public DateTime? FinalizationDate { get; set; }
+
+        public ICollection<Group_GroupCategory> GroupCategories { get; set; }
     }
 }

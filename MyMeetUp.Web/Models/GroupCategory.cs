@@ -1,4 +1,5 @@
 ﻿using MyMeetUp.Web.Models.Shared;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyMeetUp.Web.Models
@@ -8,5 +9,7 @@ namespace MyMeetUp.Web.Models
         [Required]
         [Display(Name = "Categoría")]
         public string Name { get; set; }
+
+        public ICollection<Group_GroupCategory> GroupCategories { get; set; }
     }
 }

@@ -8,6 +8,8 @@
   <ItemGroup>
     <Compile Remove="Data\Migrations\20200314203951_CreateInitialAppDBSchema.cs" />
     <Compile Remove="Data\Migrations\20200314203951_CreateInitialAppDBSchema.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200329183649_Added_Groupcategories_Collection.cs" />
+    <Compile Remove="Data\Migrations\20200329183649_Added_Groupcategories_Collection.Designer.cs" />
   </ItemGroup>
 
 
@@ -25,7 +27,7 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Admin\ViewModels\" />
+    <Folder Include="ViewModel\" />
     <Folder Include="wwwroot\img\LandPage\Carousel\" />
   </ItemGroup>
 
