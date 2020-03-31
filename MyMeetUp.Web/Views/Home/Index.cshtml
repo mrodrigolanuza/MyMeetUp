@@ -55,7 +55,8 @@
                     <div class="card-body">
                         <h5 class="card-title">@group.Name</h5>
                         <p class="card-text">@group.AboutUs</p>
-                        <p class="card-text"><small class="text-muted">@($"{group.Country} / {group.City}") </small></p>
+                        <a asp-controller="Home" asp-action="Index"  class="stretched-link"> </a>
+                        <p class="card-footer"><small class="text-muted">@($"{group.Country} / {group.City}") </small></p>
                     </div>
                 </div>
             }
@@ -77,6 +78,7 @@
                     </div>
                     <div class="card-body">
                         <img src="~/img/LandPage/Groups/Group.png" class="card-img-top" alt="...">
+                        <a asp-controller="Home" asp-action="Privacy" class="stretched-link"> </a>
                     </div>
                 </div>
             }
