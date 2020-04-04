@@ -1,0 +1,83 @@
+﻿@model MyMeetUp.Web.ViewModels.GroupDetailsViewModel
+
+@{
+    ViewData["Title"] = "Información de Grupo";
+}
+
+    <div class="container">
+        <!--Imagen e información del grupo-->
+        <div class="row align-items-center justify-content-around">
+            <div class="col-8">
+                <img src="~/img/LandPage/Carousel/Carrusel_1.jpg" class="img-fluid img-thumbnail rounded-pill" />
+            </div>
+            <div class="col-4 shadow p-3 mb-5 bg-white rounded">
+                <div class="row">
+                    <div class="col">
+                        <h1>@Model.GroupInfo.Name</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <span><i class="fa fa-map-marker"></i>  @Model.GroupInfo.City, @Model.GroupInfo.Country</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <span><i class="fa fa-calendar"></i>  Fundado @Model.GroupInfo.CreationDate.ToString("dd/M/yyyy")</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <span><i class="fa fa-address-book-o"></i>  @Model.MembersTotalNumber miembros</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--Sobre Nosotros..-->
+        <div class="row mt-3">
+            <div class="col">
+                <div class="mt-4 mb-2 shadow p-3 mb-5 bg-white rounded"><h2><span><i class="fa fa-bookmark"></i></span> Sobre nosotros..</h2></div>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">@Model.GroupInfo.AboutUs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--Mostrar los eventos organizados por el grupo-->
+        <div class="mt-4 mb-2 shadow p-3 mb-5 bg-white rounded"><h2><span><i class="fa fa-bullhorn"></i></span> Eventos</h2></div>
+        @if (Model.GroupEvents != null && Model.GroupEvents.Any()) {
+            foreach (Event groupEvent in Model.GroupEvents) {
+                <div class="row mt-3">
+                    <div class="col">
+                        <div class="card bg-light mb-3">
+                            @if (groupEvent.FechaHora >= DateTime.Today) {
+                            <div class="card-header"><span class="fa fa-bolt"></span>   @(groupEvent.FechaHora.ToString("dd/MM/yyyy hh:mm"))<span class="badge badge-success float-right">Pendiente</span></div>
+                            }
+                            else {
+                        <div class="card-header"><span class="fa fa-bolt"></span>   @(groupEvent.FechaHora.ToString("dd/MM/yyyy hh:mm"))<span class="badge badge-danger float-right">Finalizado</span></div>
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title">@groupEvent.Title</h5>
+                                <p class="card-text">@groupEvent.Description</p>
+                                <a asp-controller="Events" asp-action="Details" asp-route-id="@groupEvent.Id" class="stretched-link"> </a>
+                                <p class="card-footer"><small class="text-muted">@($"{groupEvent.Address}") </small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else {
+            <div class="row mt-3">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header"><span class="badge badge-warning float-right">Sin eventos</span></div>
+                        <div class="card-body">Todavía no se han organizado eventos en este grupo.</div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>

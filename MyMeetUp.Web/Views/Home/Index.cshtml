@@ -55,7 +55,7 @@
                     <div class="card-body">
                         <h5 class="card-title">@group.Name</h5>
                         <p class="card-text">@group.AboutUs</p>
-                        <a asp-controller="Home" asp-action="Index"  class="stretched-link"> </a>
+                        <a asp-controller="Groups" asp-action="Details" asp-route-id ="@group.Id" class="stretched-link"> </a>
                         <p class="card-footer"><small class="text-muted">@($"{group.Country} / {group.City}") </small></p>
                     </div>
                 </div>
