@@ -1,7 +1,11 @@
 ﻿@model MyMeetUp.Web.Models.Event
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Información del Evento";
+    var userSignedIn = await UserManager.GetUserAsync(User);
+    var userId = userSignedIn?.Id;
 }
 
 <div class="container">
@@ -9,8 +13,22 @@
         <div class="col">
             <div class="row">
                 <div class="col">
-                    <span><b>@Model.FechaHora.ToString("dddd dd MMM yyyy")</b></span>
-                    <div class="mt-1 mb-2 shadow p-3 bg-white rounded"><h2><span><i class="fa fa-calendar-check-o"></i></span> @Model.Title</h2></div>
+                    <div style="height: 45px">
+                        <span><b>@Model.FechaHora.ToString("dddd dd MMM yyyy")</b></span>
+                        @if (Model.FechaHora<DateTime.Today) {
+                            <span class="badge badge-warning float-right">Evento Finalizado</span>
+                        }
+                        else if (SignInManager.IsSignedIn(User)) {
+                            @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__EventAttendanceAntiForgeryToken" })) {
+                                <button href="#" class="btn btn-info float-right" onclick="anotarNuevoAsistenteAlEvento()">Quiero Asistir!</button>
+                                <input type="hidden" id="userId" value="@userId" />
+                                <input type="hidden" id="eventId" value="@Model.Id" />
+                            }
+                        }
+                    </div>
+                    <div class="mt-4 mb-2 shadow p-3 bg-white rounded">
+                        <h2><span><i class="fa fa-calendar-check-o"></i></span> @Model.Title</h2>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -46,4 +64,10 @@
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/events.js"></script>
+}
+
+
 
