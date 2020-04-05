@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyMeetUp.Web.Data;
 using MyMeetUp.Web.Models;
+using MyMeetUp.Web.ViewModels;
 
 namespace MyMeetUp.Web.Controllers
 {
@@ -39,7 +41,7 @@ namespace MyMeetUp.Web.Controllers
                 return NotFound();
             }
                 
-            
+            //Event Info
             var eventSelected = await _context.Events
                 .Include(ec => ec.EventCategory)
                 .Include(g => g.Group)
@@ -49,13 +51,33 @@ namespace MyMeetUp.Web.Controllers
                 _logger.LogError($"Consulta de base de datos NOK sobre el Evento {id}. No encontrado.");
                 return NotFound();
             }
-                
-            return View(eventSelected);
+
+            //SignedIn User Info
+            bool signedInUserWillAttend = false;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+            if(userId != null) {
+                signedInUserWillAttend = _context.EventAttendances.Where(ea => ((ea.ApplicationUserId == userId.Value) && (ea.EventId == eventSelected.Id))).Any();
+            }
+
+
+            //List of Users Will Attend the Event
+            List<ApplicationUser> eventAttendeesList = await _context.EventAttendances
+                                                                    .Include(ea => ea.ApplicationUser)
+                                                                    .Where(ea => ea.EventId == id)
+                                                                    .Select(ea => ea.ApplicationUser)
+                                                                    .ToListAsync();
+
+            EventDetailsViewModel eventInfo = new EventDetailsViewModel { 
+                EventInfo = eventSelected,
+                SignedInUserWillAttend = signedInUserWillAttend,
+                EventAttendees = eventAttendeesList
+            };
+            return View(eventInfo);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddNewAttendant(string userId, int eventId) 
+        public async Task<IActionResult> AddNewAttendee(string userId, int eventId) 
         {
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             Event eventSelected = await _context.Events.Where(e => e.Id == eventId).FirstOrDefaultAsync();

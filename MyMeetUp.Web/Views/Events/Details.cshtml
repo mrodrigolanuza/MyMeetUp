@@ -1,4 +1,4 @@
-﻿@model MyMeetUp.Web.Models.Event
+﻿@model MyMeetUp.Web.ViewModels.EventDetailsViewModel
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -14,48 +14,49 @@
             <div class="row">
                 <div class="col">
                     <div style="height: 45px">
-                        <span><b>@Model.FechaHora.ToString("dddd dd MMM yyyy")</b></span>
-                        @if (Model.FechaHora<DateTime.Today) {
+                        <span><b>@Model.EventInfo.FechaHora.ToString("dddd dd MMM yyyy")</b></span>
+                        @if (Model.EventInfo.FechaHora < DateTime.Today) {
                             <span class="badge badge-warning float-right">Evento Finalizado</span>
                         }
                         else if (SignInManager.IsSignedIn(User)) {
                             @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__EventAttendanceAntiForgeryToken" })) {
-                                <button href="#" class="btn btn-info float-right" onclick="anotarNuevoAsistenteAlEvento()">Quiero Asistir!</button>
+                                @Html.AntiForgeryToken()
+
+                                @if (Model.SignedInUserWillAttend) {
+                                    <button href="#" class="btn btn-danger float-right" onclick="ManageUserEventAttendance()" id="register-event-button">Liberar Mi Plaza!</button>
+                                }
+                                else {
+                                    <button href="#" class="btn btn-info float-right" onclick="ManageUserEventAttendance()" id="register-event-button">Quiero Asistir!</button>
+                                }
                                 <input type="hidden" id="userId" value="@userId" />
-                                <input type="hidden" id="eventId" value="@Model.Id" />
+                                <input type="hidden" id="eventId" value="@Model.EventInfo.Id" />
                             }
                         }
                     </div>
                     <div class="mt-4 mb-2 shadow p-3 bg-white rounded">
-                        <h2><span><i class="fa fa-calendar-check-o"></i></span> @Model.Title</h2>
+                        <h2><span><i class="fa fa-calendar-check-o"></i></span> @Model.EventInfo.Title</h2>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-8">
-                    <div class="card">
-                        <div class="card-body">
-                            <p class="card-text">@Model.Description</p>
-                        </div>
+                    <div class="shadow p-3 bg-white rounded">
+                        <p class="card-text">@Model.EventInfo.Description</p>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="row">
                         <div class="col">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5><span><i class="fa fa-group"></i>  @Model.Group.Name</span></h5>
-                                </div>
+                            <div class="shadow p-3 bg-white rounded">
+                                <h5><span><i class="fa fa-group"></i>  @Model.EventInfo.Group.Name</span></h5>
                             </div>
                         </div>
                     </div>
                     <div class="mt-1 row">
                         <div class="col">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p><span><i class="fa fa-clock-o"></i>  @Model.FechaHora.ToString("dd/MM/yyyy hh:mm")</span></p>
-                                    <p><span><i class="fa fa-map-marker"></i>  @Model.Address</span></p>
-                                </div>
+                            <div class="shadow p-3 bg-white rounded">
+                                <p><span><i class="fa fa-clock-o"></i>  @Model.EventInfo.FechaHora.ToString("dd/MM/yyyy hh:mm")</span></p>
+                                <p><span><i class="fa fa-map-marker"></i>  @Model.EventInfo.Address</span></p>
                             </div>
                         </div>
                     </div>
