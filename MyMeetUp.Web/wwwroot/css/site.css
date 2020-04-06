@@ -92,3 +92,10 @@ The navbar toggle appears at this breakpoint */
 
 @media (max-width: 950px) {
 }
+
+.card:hover {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+    cursor:pointer;
+}
+
+
