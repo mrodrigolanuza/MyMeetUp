@@ -1,0 +1,27 @@
+﻿@model List<ApplicationUser>
+
+@if (Model != null && Model.Any()) {
+    foreach (ApplicationUser attendee in Model) {
+        <div class="row mt-2">
+            <div class="col">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">@($"{attendee.Name} {attendee.Surname}")</h5>
+                        <p class="card-text">@($"{attendee.City} - {attendee.Country}")</p>
+                        <p class="card-footer"><small class="text-muted">@attendee.Email</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+else {
+    <div class="row mt-2">
+        <div class="col">
+            <div class="card">
+                <div class="card-header"><span class="badge badge-warning float-right">Sin asistentes!!</span></div>
+                <div class="card-body">No hay asistentes en este evento..</div>
+            </div>
+        </div>
+    </div>
+}

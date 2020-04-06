@@ -80,10 +80,10 @@ namespace MyMeetUp.Web.Controllers
         public async Task<IActionResult> AddNewAttendee(string userId, int eventId) 
         {
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
-            Event eventSelected = await _context.Events.Where(e => e.Id == eventId).FirstOrDefaultAsync();
+            Event eventSelected = await _context.Events.FirstOrDefaultAsync(e => e.Id == eventId);
             EventAttendanceState eventAttendaceState = await _context.EventAttendanceStates.Where(ea => ea.State == "I WILL ATTEND").FirstOrDefaultAsync();
             if ((user is null) || (eventSelected is null))
-                return Json(new { success = false });
+                return Ok(new { success = false });
 
             EventAttendance eventAttendance = new EventAttendance { 
                 ApplicationUser = user,
@@ -95,8 +95,9 @@ namespace MyMeetUp.Web.Controllers
             };
 
             try {
-                if (_context.EventAttendances.Where(ea => ((ea.ApplicationUserId == userId) && (ea.EventId == eventSelected.Id))).Any()) {
-                    EventAttendance actualEventAttendace = await _context.EventAttendances.Where(ea => ((ea.ApplicationUserId == userId) && (ea.EventId == eventSelected.Id))).AsNoTracking().FirstOrDefaultAsync();
+                //if (_context.EventAttendances.Where(ea => ((ea.ApplicationUserId == userId) && (ea.EventId == eventSelected.Id))).Any()) {
+                if (_context.EventAttendances.Any(ea => ((ea.ApplicationUserId == userId) && (ea.EventId == eventSelected.Id)))) {
+                        EventAttendance actualEventAttendace = await _context.EventAttendances.Where(ea => ((ea.ApplicationUserId == userId) && (ea.EventId == eventSelected.Id))).AsNoTracking().FirstOrDefaultAsync();
                     eventAttendance.Id = actualEventAttendace.Id;
                     _context.EventAttendances.Update(eventAttendance);
                 }
@@ -106,9 +107,25 @@ namespace MyMeetUp.Web.Controllers
                 await _context.SaveChangesAsync();
             } catch (Exception e) {
                 _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
-                return Json(new { success = false });
+                return Ok(new { success = false });
             }
 
+            return Ok(new { success = true });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LeaveMySeat(string userId, int eventId) 
+        {
+            try {
+
+                EventAttendance e = await _context.EventAttendances.FirstOrDefaultAsync(ea => ea.EventId == eventId && ea.ApplicationUserId == userId);
+                _context.Remove(e);
+                await _context.SaveChangesAsync();
+            } catch (Exception e) {
+                _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
+                return Json(new { success = false });
+            }
             return Json(new { success = true });
         }
 

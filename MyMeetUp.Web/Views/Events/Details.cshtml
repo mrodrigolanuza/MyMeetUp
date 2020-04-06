@@ -23,10 +23,10 @@
                                 @Html.AntiForgeryToken()
 
                                 @if (Model.SignedInUserWillAttend) {
-                                    <button href="#" class="btn btn-danger float-right" onclick="ManageUserEventAttendance()" id="register-event-button">Liberar Mi Plaza!</button>
+                                    <a href="#" class="btn btn-danger float-right" onclick="ManageUserEventAttendance()" id="register-event-button">Liberar Mi Plaza!</a>
                                 }
                                 else {
-                                    <button href="#" class="btn btn-info float-right" onclick="ManageUserEventAttendance()" id="register-event-button">Quiero Asistir!</button>
+                                    <a href="#" class="btn btn-info float-right" onclick="ManageUserEventAttendance()" id="register-event-button">Quiero Asistir!</a>
                                 }
                                 <input type="hidden" id="userId" value="@userId" />
                                 <input type="hidden" id="eventId" value="@Model.EventInfo.Id" />
@@ -62,6 +62,18 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="mt-4 mb-2 shadow p-3 bg-white rounded">
+                <h2><span><i class="fa fa-check-circle"></i></span> Asistentes</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col" id="attendees-to-event">
+            @await  Html.PartialAsync("~/Views/Events/_AttendeesToEvent.cshtml", Model.EventAttendees)
         </div>
     </div>
 </div>
