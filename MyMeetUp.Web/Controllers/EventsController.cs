@@ -129,6 +129,21 @@ namespace MyMeetUp.Web.Controllers
             return Json(new { success = true });
         }
 
+        //GET: Events/AttendeesList/5
+        [HttpGet]
+        public async Task<PartialViewResult> AttendeesList(int eventId) 
+        {
+            if (eventId != 0) {
+                var attendeesToEvent = await _context.EventAttendances.Include(ea => ea.ApplicationUser).Where(ea => ea.EventId == eventId).ToListAsync();
+                List<ApplicationUser> attendeesList = new List<ApplicationUser>();
+                foreach (EventAttendance eventAttendance in attendeesToEvent) {
+                    attendeesList.Add(eventAttendance.ApplicationUser);
+                }
+                return PartialView("_AttendeesToEvent", attendeesList);
+            }
+            return null;
+        }
+
         // GET: Events/Create
         //public IActionResult Create()
         //{
