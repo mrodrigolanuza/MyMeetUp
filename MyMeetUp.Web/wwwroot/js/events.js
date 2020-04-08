@@ -82,3 +82,28 @@ function UpdateAttendeesToEvent() {
         }
     });
 }
+
+function SendComment() {
+    console.log("Enviando comentario..");
+    $.ajax({
+        url: "/Events/NewComment",
+        type: "POST",
+        data: {
+            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]',
+                $("#__EventCommentAntiForgeryToken")).val(),
+            userId: $("#userId").val(),
+            eventId: $("#eventId").val(),
+            commentMessage: $("#commentMessage").val()
+        },
+        success: function (response) {
+            console.log("Entrando en Success.. SendComment");
+            $("#event-comments").html(response);
+        },
+        error: function (response) {
+            console.log("Entrando en Error..");
+        },
+        complete: function (response) {
+            console.log("Entrando en Complete.. SendComment");
+        }
+    });
+}

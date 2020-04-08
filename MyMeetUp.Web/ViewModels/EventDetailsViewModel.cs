@@ -11,5 +11,7 @@ namespace MyMeetUp.Web.ViewModels
 
         public List<ApplicationUser> EventAttendees { get; set; }
 
+        public List<EventComment> EventComments { get; set; }
+
     }
 }

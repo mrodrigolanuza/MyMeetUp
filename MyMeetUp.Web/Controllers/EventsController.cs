@@ -67,10 +67,17 @@ namespace MyMeetUp.Web.Controllers
                                                                     .Select(ea => ea.ApplicationUser)
                                                                     .ToListAsync();
 
+            //List of Comments associated to the event
+            List<EventComment> eventComments = await _context.EventComments
+                                                    .Include(ec => ec.ApplicationUser)
+                                                    .Where(ec => ec.EventId == id)
+                                                    .ToListAsync();
+
             EventDetailsViewModel eventInfo = new EventDetailsViewModel { 
                 EventInfo = eventSelected,
                 SignedInUserWillAttend = signedInUserWillAttend,
-                EventAttendees = eventAttendeesList
+                EventAttendees = eventAttendeesList,
+                EventComments = eventComments
             };
             return View(eventInfo);
         }
@@ -95,7 +102,6 @@ namespace MyMeetUp.Web.Controllers
             };
 
             try {
-                //if (_context.EventAttendances.Where(ea => ((ea.ApplicationUserId == userId) && (ea.EventId == eventSelected.Id))).Any()) {
                 if (_context.EventAttendances.Any(ea => ((ea.ApplicationUserId == userId) && (ea.EventId == eventSelected.Id)))) {
                         EventAttendance actualEventAttendace = await _context.EventAttendances.Where(ea => ((ea.ApplicationUserId == userId) && (ea.EventId == eventSelected.Id))).AsNoTracking().FirstOrDefaultAsync();
                     eventAttendance.Id = actualEventAttendace.Id;
@@ -105,6 +111,7 @@ namespace MyMeetUp.Web.Controllers
                     _context.EventAttendances.Add(eventAttendance);
                 }
                 await _context.SaveChangesAsync();
+                _logger.LogInformation($"Usuario {userId} inscrito en evento {eventId}.");
             } catch (Exception e) {
                 _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
                 return Ok(new { success = false });
@@ -141,7 +148,39 @@ namespace MyMeetUp.Web.Controllers
                 }
                 return PartialView("_AttendeesToEvent", attendeesList);
             }
+            _logger.LogError($"Lista de asistentes al evento {eventId} no encontrada.");
             return null;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<PartialViewResult> NewComment(string userId, int eventId, string commentMessage) 
+        {
+            if (userId == "" || eventId == 0 || commentMessage == "")
+                return null;
+
+            EventComment newEventComment = new EventComment {
+                ApplicationUserId = userId,
+                EventId = eventId,
+                Text = commentMessage,
+                PublicationDate = DateTime.Now,
+                ParentEventCommentId = null
+            };
+
+            try {
+                _context.EventComments.Add(newEventComment);
+                await _context.SaveChangesAsync();
+            } 
+            catch (Exception e) {
+                _logger.LogCritical($"EXCEPCION en NewComment: {e.Message}");
+                return null;
+            }
+
+            List<EventComment> comments = await _context.EventComments
+                                                        .Include(c => c.ApplicationUser)
+                                                        .Where(c => c.EventId == eventId)
+                                                        .ToListAsync();
+            return PartialView("_EventComments", comments);
         }
 
         // GET: Events/Create
