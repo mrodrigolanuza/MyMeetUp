@@ -91,13 +91,24 @@
         @if (SignInManager.IsSignedIn(User)) {
             <div class="row">
                 <div class="col">
-                    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__EventCommentAntiForgeryToken" })) {
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" id="userId" value="@userId" />
-                        <input type="hidden" id="eventId" value="@Model.EventInfo.Id" />
-                        <input type="text" id="commentMessage" />
-                        <a href="#" class="btn btn-info float-right" onclick="SendComment()" id="send-comment-button">Enviar Comentario</a>
-                    }
+                    <div class="card">
+                        <div class="card-header"><strong>Nuevo comentario</strong></div>
+                        <div class="card-body">
+                            @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__EventCommentAntiForgeryToken" })) {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" id="userId" value="@userId" />
+                                <input type="hidden" id="eventId" value="@Model.EventInfo.Id" />
+                                <div class="row">
+                                    <div class="col-11">
+                                        <textarea class="form-control" id="commentMessage" name="textarea-input" rows="5" placeholder="Escriba aquí.."></textarea>
+                                    </div>
+                                    <div class="col-1 alig">
+                                        <a href="#" class="btn btn btn-info float-right" onclick="SendComment()" id="send-comment-button">Enviar</a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         }
