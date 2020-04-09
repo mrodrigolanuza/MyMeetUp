@@ -44,11 +44,12 @@ namespace MyMeetUp.Web.Controllers
                 _logger.LogWarning($"Groups/Details: Id grupo = {id} no encontrado..");
                 return NotFound();
             }
-            _logger.LogInformation($"Groups/Details: Id grupo = {id} encontrado.. OK");
+            
             var groupEventsSelected = await _context.Events.Where(e => e.GroupId == groupSelected.Id).OrderByDescending(e=>e.FechaHora).ToListAsync();
-
             _logger.LogInformation($"Groups/Details: Id grupo = {id} encontrado.. OK");
+
             int numGroupMembers = _context.GroupMembers.Where(gm => gm.GroupId == groupSelected.Id).Count();
+            _logger.LogInformation($"Groups/Details: Id grupo = {id} encontrado.. OK");
 
             var groupDetailsViewModel = new GroupDetailsViewModel
             {
