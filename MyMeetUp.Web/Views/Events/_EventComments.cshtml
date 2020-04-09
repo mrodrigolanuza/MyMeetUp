@@ -2,19 +2,28 @@
 
 
 @if (Model != null && Model.Any()) {
-    foreach (EventComment comment in Model) {
-        <div class="row mt-2">
-            <div class="col">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5 class="card-title">@($"{comment.ApplicationUser.Name} {comment.ApplicationUser.Surname}")</h5>
-                        <p class="card-text">@($"{comment.Text}")</p>
-                        <p class="card-footer"><small class="text-muted">@comment.PublicationDate.ToString("dd/MM/yyyy hh:mm")</small></p>
+    <div class="comments-container">
+        <ul id="comments-list" class="comments-list">
+            @foreach (EventComment comment in Model) {
+                <li>
+                    <div class="comment-main-level">
+                        <div class="comment-avatar">
+                            <img src="~/img/usuario.png" alt="~/img/usuario.png">
+                        </div>
+                        <div class="comment-box">
+                            <div class="comment-head">
+                                <h6 class="comment-name"><a href="http://creaticode.com/blog">@($"{comment.ApplicationUser.Name} {comment.ApplicationUser.Surname}")</a></h6>
+                                <span>@comment.PublicationDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
+                            </div>
+                            <div class="comment-content">
+                                @($"{comment.Text}")
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    }
+                </li>
+            }
+        </ul>
+    </div>
 }
 else {
     <div class="row mt-2">

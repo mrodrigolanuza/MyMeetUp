@@ -98,6 +98,8 @@ function SendComment() {
         success: function (response) {
             console.log("Entrando en Success.. SendComment");
             $("#event-comments").html(response);
+            document.getElementById("commentMessage").value = "";
+            window.scrollTo(0, document.body.scrollHeight);
         },
         error: function (response) {
             console.log("Entrando en Error..");
