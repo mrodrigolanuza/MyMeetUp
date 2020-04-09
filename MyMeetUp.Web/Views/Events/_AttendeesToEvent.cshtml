@@ -1,19 +1,20 @@
 ﻿@model List<ApplicationUser>
 
 @if (Model != null && Model.Any()) {
-    foreach (ApplicationUser attendee in Model) {
-        <div class="row mt-2">
-            <div class="col">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5 class="card-title">@($"{attendee.Name} {attendee.Surname}")</h5>
-                        <p class="card-text">@($"{attendee.City} - {attendee.Country}")</p>
-                        <p class="card-footer"><small class="text-muted">@attendee.Email</small></p>
+    <div class="card-deck">
+        @foreach (ApplicationUser attendee in Model) {
+            <div class="card mt-2" style="max-width: 20rem; min-width: 20rem;">
+                <div class="card-body">
+                    <img src="~/img/usuario.png" class="float-left rounded-circle" height="64" width="64">
+                    <div class="message">
+                        <h5 class="card-title">@attendee.Name</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@attendee.Surname</h6>
+                        <p class="card-text">Miembro</p>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 }
 else {
     <div class="row mt-2">
