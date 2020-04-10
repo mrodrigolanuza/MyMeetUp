@@ -48,7 +48,7 @@
                     <div class="row">
                         <div class="col">
                             <div class="shadow p-3 bg-white rounded">
-                                <h5><span><i class="fa fa-group"></i>  @Model.EventInfo.Group.Name</span></h5>
+                                <a asp-controller="Groups" asp-action="Details" asp-route-id="@Model.EventInfo.GroupId" class="stretched-link"><h5><span><i class="fa fa-group"></i>  @Model.EventInfo.Group.Name</span></h5></a>
                             </div>
                         </div>
                     </div>
