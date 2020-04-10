@@ -8,6 +8,8 @@ namespace MyMeetUp.Web.ViewModels
     {
         public bool IsUserSignedIn;
         public bool IsUserMember;
+        public string UserId;
+        public int GroupId;
         public List<GroupMemberProfile> GroupMemberProfiles;
 
         public bool IsUserGroupCoordinator() {

@@ -25,6 +25,8 @@ namespace MyMeetUp.Web.ViewComponents
 
             if (ValidationsOK(groupId, userId)) {
                 groupUserInfo.IsUserSignedIn = true;
+                groupUserInfo.GroupId = groupId;
+                groupUserInfo.UserId = userId;
                 if (await IsUserMemberOfGroupAsync()) {
                     groupUserInfo.IsUserMember = true;
                     groupUserInfo.GroupMemberProfiles = await GetUserProfilesInThisGroupAsync();

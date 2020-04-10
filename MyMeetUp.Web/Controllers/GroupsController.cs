@@ -61,6 +61,46 @@ namespace MyMeetUp.Web.Controllers
             return View(groupDetailsViewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterNewMember(string userId, int groupId) {
+            try {
+
+                GroupMemberProfile memberProfile = await _context.GroupMemberProfiles.FirstOrDefaultAsync(gmp => gmp.Name == "MEMBER");
+
+                GroupMembers newGroupMember = new GroupMembers
+                {
+                    GroupId = groupId,
+                    ApplicationUserId = userId,
+                    GroupMemberProfileId = memberProfile.Id
+                };
+
+                _context.GroupMembers.Add(newGroupMember);
+                await _context.SaveChangesAsync();
+            } catch (Exception e) {
+                _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
+                return Json(new { success = false });
+            }
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnregisterMember(string userId, int groupId) {
+            try {
+
+                List<GroupMembers> groupMemberProfiles = await _context.GroupMembers.Where(gm => gm.GroupId == groupId && gm.ApplicationUserId == userId).ToListAsync();
+                foreach(GroupMembers groupMember in groupMemberProfiles) {
+                    _context.Remove(groupMember);
+                }
+                await _context.SaveChangesAsync();
+            } catch (Exception e) {
+                _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
+                return Json(new { success = false });
+            }
+            return Json(new { success = true });
+        }
+
         // GET: Groups/Create
         //public IActionResult Create()
         //{

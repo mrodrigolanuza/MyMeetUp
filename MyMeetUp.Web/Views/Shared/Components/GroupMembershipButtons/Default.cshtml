@@ -1,19 +1,21 @@
 ﻿@model GroupUserViewModel
 
 @if (Model.IsUserSignedIn) {
-    @if (Model.IsUserMember) {
-        <a href="#" class="btn btn-danger float-right" onclick="ManageUserGroupMembership()" id="register-group-button">Abandonar este Grupo</a>
-        @if (Model.IsUserGroupCoordinator()) {
-            <a href="#" class="btn btn-info float-left" onclick="ManageUserGroupMembership()" id="register-group-button">Crear Evento</a>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__GroupDetailsButtonsAntiForgeryToken" })) {
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="userId" value="@Model.UserId" />
+        <input type="hidden" id="groupId" value="@Model.GroupId" />
+        @if (Model.IsUserMember) {
+            <a href="#" class="btn btn-danger float-right" onclick="ManageUserGroupMembership()" id="register-group-button">Abandonar este Grupo</a>
+            @if (Model.IsUserGroupCoordinator()) {
+                <a class="btn btn-info float-left" asp-controller="Events" asp-action="Create" asp-route-idgroup="@Model.GroupId" id="create-event-group-button">Crear Evento</a>
+            }
+        }
+        else {
+            <a href="#" class="btn btn-info float-right" onclick="ManageUserGroupMembership()" id="register-group-button">Unirse a este Grupo</a>
         }
     }
-    else {
-        <a href="#" class="btn btn-info float-right" onclick="ManageUserGroupMembership()" id="register-group-button">Unirse a este Grupo</a>
-    }
 }
-
-
-
 
 
 
