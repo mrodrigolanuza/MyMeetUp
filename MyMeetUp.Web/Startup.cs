@@ -36,7 +36,7 @@ namespace MyMeetUp.Web
         }
 
         public void ConfigureDevelopment(IApplicationBuilder app, IWebHostEnvironment env) {
-            env.ApplicationName = $"{_applicationName} [Development]";
+            env.ApplicationName = $"{_applicationName} [Dev]";
             app.UseDeveloperExceptionPage();
             app.UseDatabaseErrorPage();
             Configure(app, env);
