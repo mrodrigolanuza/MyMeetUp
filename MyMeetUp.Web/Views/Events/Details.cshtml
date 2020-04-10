@@ -91,7 +91,7 @@
     @if (SignInManager.IsSignedIn(User)) {
         <div class="row">
             <div class="col">
-                <div class="card">
+                <div class="card mt-2">
                     <div class="card-header"><strong>Nuevo comentario</strong></div>
                     <div class="card-body">
                         @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__EventCommentAntiForgeryToken" })) {
