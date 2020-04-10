@@ -6,28 +6,28 @@ namespace MyMeetUp.Web.Models
 {
     public class Event : BaseModel
     {
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "Campo obligatorio")]
+        [StringLength(100, ErrorMessage ="El título es demasiado largo")]
         [Display(Name = "Título")]
         public string Title { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo obligatorio")]
         [Display(Name = "Detalles")]
         public string Description { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo obligatorio")]
         [Display(Name = "Dirección")]
         public string Address { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo obligatorio")]
         [Display(Name = "Ciudad")]
         public string City { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo obligatorio")]
         [Display(Name = "País")]
         public string Country { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo obligatorio")]
         [Display(Name = "Fecha y Hora")]
         public DateTime FechaHora { get; set; }
 

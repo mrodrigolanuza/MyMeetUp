@@ -4,151 +4,83 @@
     ViewData["Title"] = "Create";
 }
 
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <div class="mt-4 mb-2 shadow p-3 bg-white rounded">
-                    <h2><span><i class="fa fa-file-text"></i></span> Edición Nuevo Evento</h2>
-                </div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="mt-4 mb-2 shadow p-3 bg-white rounded">
+                <h2><span><i class="fa fa-file-text"></i></span> Edición Nuevo Evento</h2>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
+    </div>
+    <div class="row">
+        <div class="col">
+            <form asp-controller="Events" asp-action="Create" asp-antiforgery="true" method="post" class="form-horizontal">
                 <div class="card">
                     <div class="card-header">Grupo <strong>Dotnetters</strong></div>
                     <div class="card-body">
-                        <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label" for="text-input"><strong>Título</strong></label>
-                                <div class="col-md-9">
-                                    <input class="form-control" id="text-input" type="text" name="text-input" placeholder="Importante pensar en algo con gancho..">
-                                </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label"><strong>Título</strong></label>
+                            <div class="col-md-9">
+                                <input asp-for="Title" class="form-control" placeholder="Importante pensar en algo con gancho..">
+                                <span asp-validation-for="Title" class="text-danger"></span>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label" for="textarea-input"><strong>Descripción / Detalles</strong></label>
-                                <div class="col-md-9">
-                                    <textarea class="form-control" id="textarea-input" name="textarea-input" rows="9" placeholder="Describa aquí todos los detalles del evento.."></textarea>
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label"><strong>Descripción / Detalles</strong></label>
+                            <div class="col-md-9">
+                                <textarea asp-for="Description" class="form-control" rows="9" placeholder="Describa aquí todos los detalles del evento.."></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label" for="date-input"><strong>Fecha / Hora</strong></label>
-                                <div class="col-md-5">
-                                    <input class="form-control" id="date-input" type="date" name="date-input" placeholder=""><span class="help-block"></span>
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label"><strong>Fecha / Hora</strong></label>
+                            <div class="col-md-5">
+                                <input asp-for="FechaHora" class="form-control" id="date-input" type="date" placeholder=""><span class="help-block"></span>
+                                <span asp-validation-for="FechaHora" class="text-danger"></span>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label" for="text-input"><strong>Dirección</strong></label>
-                                <div class="col-md-9">
-                                    <input class="form-control" id="text-input" type="text" name="text-input" placeholder=""><span class="help-block"></span>
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label"><strong>Dirección</strong></label>
+                            <div class="col-md-9">
+                                <input asp-for="Address" class="form-control" placeholder=""><span class="help-block"></span>
+                                <span asp-validation-for="Address" class="text-danger"></span>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label" for="text-input"><strong>Ciudad</strong></label>
-                                <div class="col-md-9">
-                                    <input class="form-control" id="text-input" type="text" name="text-input" placeholder=""><span class="help-block"></span>
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label"><strong>Ciudad</strong></label>
+                            <div class="col-md-9">
+                                <input asp-for="City" class="form-control" placeholder=""><span class="help-block"></span>
+                                <span asp-validation-for="City" class="text-danger"></span>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label" for="text-input"><strong>País</strong></label>
-                                <div class="col-md-9">
-                                    <input class="form-control" id="text-input" type="text" name="text-input" placeholder=""><span class="help-block"></span>
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label"><strong>País</strong></label>
+                            <div class="col-md-9">
+                                <input asp-for="Country" class="form-control" placeholder=""><span class="help-block"></span>
+                                <span asp-validation-for="Country" class="text-danger"></span>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label" for="select1"><strong>Categoría</strong></label>
-                                <div class="col-md-9">
-                                    <select class="form-control" id="select1" name="select1">
-                                        <option value="0">Categoría #0</option>
-                                        <option value="1">Categoría #1</option>
-                                        <option value="2">Categoría #2</option>
-                                        <option value="3">Categoría #3</option>
-                                    </select>
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label"><strong>Categoría</strong></label>
+                            <div class="col-md-9">
+                                <select asp-for="EventCategoryId" class="form-control" asp-items="ViewBag.EventCategoryId"></select>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 col-form-label" for="file-input"><strong>Adjuntar Imágen</strong></label>
-                                <div class="col-md-9">
-                                    <input id="file-input" type="file" name="file-input">
-                                </div>
-                            </div>
-                        </form>
+                        </div>
+                        <div>
+                            <input asp-for="GroupId" type="hidden" value="@ViewData["GroupId"]" />
+                        </div>
+
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn btn-info float-right" type="submit"> Crear Evento</button>
-                        <button class="btn btn btn-danger float-right mr-2" type="reset"> Limpiar</button>
+                        <button class="btn btn-info float-right"> Crear Evento</button>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-<h1>Create</h1>
-
-<h4>Event</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Country" class="control-label"></label>
-                <input asp-for="Country" class="form-control" />
-                <span asp-validation-for="Country" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaHora" class="control-label"></label>
-                <input asp-for="FechaHora" class="form-control" />
-                <span asp-validation-for="FechaHora" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GroupId" class="control-label"></label>
-                <select asp-for="GroupId" class ="form-control" asp-items="ViewBag.GroupId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventCategoryId" class="control-label"></label>
-                <select asp-for="EventCategoryId" class ="form-control" asp-items="ViewBag.EventCategoryId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}    
 }

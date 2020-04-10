@@ -24,6 +24,7 @@ namespace MyMeetUp.Web.Controllers
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         //// GET: Events
@@ -184,30 +185,32 @@ namespace MyMeetUp.Web.Controllers
         }
 
         // GET: Events/Create
-        //public IActionResult Create()
-        //{
-        //    ViewData["EventCategoryId"] = new SelectList(_context.EventCategories, "Id", "Name");
-        //    ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "AboutUs");
-        //    return View();
-        //}
+        public IActionResult Create(int idGroup) {
+            ViewData["EventCategoryId"] = new SelectList(_context.EventCategories, "Id", "Name");
+            ViewData["GroupId"] = idGroup;
+            return View();
+        }
 
         // POST: Events/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Title,Description,Address,City,Country,FechaHora,GroupId,EventCategoryId,Id")] Event @event)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(@event);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["EventCategoryId"] = new SelectList(_context.EventCategories, "Id", "Name", @event.EventCategoryId);
-        //    ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "AboutUs", @event.GroupId);
-        //    return View(@event);
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Title,Description,Address,City,Country,FechaHora,GroupId,EventCategoryId,Id")] Event groupEvent) {
+            if (!ModelState.IsValid) {
+                ViewData["EventCategoryId"] = new SelectList(_context.EventCategories, "Id", "Name", groupEvent.EventCategoryId);
+                ViewData["GroupId"] = groupEvent.GroupId;
+                return View(groupEvent);
+            }
+
+            try {
+                _context.Events.Add(groupEvent);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"Creado nuevo evento OK >> {groupEvent.Title.ToUpper()}");
+            } catch (Exception e) {
+                _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
+            }
+
+            return RedirectToAction("Details", "Groups", new { id = groupEvent.GroupId });
+        }
 
         // GET: Events/Edit/5
         //public async Task<IActionResult> Edit(int? id)
