@@ -188,6 +188,7 @@ namespace MyMeetUp.Web.Controllers
         public IActionResult Create(int idGroup) {
             ViewData["EventCategoryId"] = new SelectList(_context.EventCategories, "Id", "Name");
             ViewData["GroupId"] = idGroup;
+            ViewData["GroupName"] = _context.Groups.FirstOrDefaultAsync(g => g.Id == idGroup).Result.Name;
             return View();
         }
 

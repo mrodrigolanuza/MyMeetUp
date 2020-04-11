@@ -16,9 +16,8 @@
         <div class="col">
             <form asp-controller="Events" asp-action="Create" asp-antiforgery="true" method="post" class="form-horizontal">
                 <div class="card">
-                    <div class="card-header">Grupo <strong>Dotnetters</strong></div>
+                    <div class="card-header">Grupo <strong>@ViewData["GroupName"]</strong></div>
                     <div class="card-body">
-
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label"><strong>Título</strong></label>
                             <div class="col-md-9">
