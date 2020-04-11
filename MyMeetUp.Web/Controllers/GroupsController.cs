@@ -31,10 +31,49 @@ namespace MyMeetUp.Web.Controllers
         // GET: Groups
         [Route("Groups/Index/{userId}")]
         public async Task<IActionResult> Index(string userId) {
-            //if(userId !=null && userId != "")
-                return View(await _context.Groups.ToListAsync());
+            GroupIndexViewModel model = new GroupIndexViewModel();
+            model.UserId = userId;
 
-            //return View(await _context.Groups.ContainsAsync(g=>g.Id)
+            if (userId != null && userId != "") {
+                model.AllGroups = await _context.GroupMembers
+                    .Include(gm => gm.Group)
+                    .Where(gm => gm.ApplicationUserId == userId)
+                    .Select(gm => gm.Group)
+                    .ToListAsync();
+
+                model.ActualUserAsGroupCoordinator = await _context.GroupMembers
+                    .Include(gmp => gmp.GroupMemberProfile)
+                    .Where(gm => gm.ApplicationUserId == userId && gm.GroupMemberProfile.Name == GroupMemberProfilesData.Coordinator)
+                    .Select(gm =>gm.GroupId)
+                    .ToListAsync();
+
+                model.ActualUserAsGroupMember = await _context.GroupMembers
+                    .Include(gmp => gmp.GroupMemberProfile)
+                    .Where(gm => gm.ApplicationUserId == userId && gm.GroupMemberProfile.Name == GroupMemberProfilesData.Member)
+                    .Select(gm => gm.GroupId)
+                    .ToListAsync();
+
+                model.GroupCategories = new Dictionary<int, List<string>>();
+                foreach (Group group in model.AllGroups) {
+                    List<string> groupCategories = await _context.Group_GroupCategories
+                                                    .Include(ggc => ggc.GroupCategory)
+                                                    .Where(ggc => ggc.GroupId == group.Id)
+                                                    .Select(ggc => ggc.GroupCategory.Name)
+                                                    .ToListAsync();
+                    model.GroupCategories.Add(group.Id, groupCategories);
+                }
+
+
+                return View(model);
+            }
+            else {
+                model.AllGroups = await _context.Groups.ToListAsync();
+                model.ActualUserAsGroupCoordinator = null;
+                model.ActualUserAsGroupMember = null;
+                model.GroupCategories = null;
+                return View(model);
+            }
+            
         }
 
         // GET: Groups/Details/5

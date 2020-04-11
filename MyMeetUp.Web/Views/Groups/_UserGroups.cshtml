@@ -1,0 +1,97 @@
+﻿@model MyMeetUp.Web.ViewModels.GroupIndexViewModel
+
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col">
+                <div class="mt-4 mb-2 shadow p-3 bg-white rounded"><h2><span><i class="fa fa-bookmark"></i></span> Mis Grupos</h2></div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col">
+                <div class="mt-4 mb-2 shadow p-3 bg-white rounded"><h4><span><i class="fa fa-bookmark"></i></span> Coordinador</h4></div>
+            </div>
+        </div>
+        <div class="row mt-1">
+            <div class="col">
+                @if (Model != null && Model.ActualUserAsGroupCoordinator.Count > 0) {
+                    <div class="card-deck">
+                        @foreach (Group group in Model.AllGroups) {
+                            if (!Model.ActualUserAsGroupCoordinator.Contains(group.Id))
+                                continue;
+                            <div class="card mt-2" style="max-width: 20rem; min-width: 20rem;">
+                                <div class="card-body">
+                                    <img src="~/img/usuario.png" class="float-left rounded-circle" height="64" width="64">
+                                    <div class="message">
+                                        <h5 class="card-title">@group.Name</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted fa fa-map-marker"> @group.City</h6>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                @foreach (string groupCategory in Model.GroupCategories[group.Id]) {
+                                                    <span class="badge badge-info float-right mt-1  mr-1">@groupCategory</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a asp-controller="Groups" asp-action="Details" asp-route-id="@group.Id" class="stretched-link"> </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else {
+                    <div class="row mt-2">
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-header"><span class="badge badge-warning float-right">Ooops!!</span></div>
+                                <div class="card-body">No coordinas ningún grupo..</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col">
+                <div class="mt-4 mb-2 shadow p-3 bg-white rounded"><h4><span><i class="fa fa-bookmark"></i></span> Miembro</h4></div>
+            </div>
+        </div>
+        <div class="row mt-1">
+            <div class="col">
+                @if (Model != null && Model.ActualUserAsGroupMember.Count > 0) {
+                    <div class="card-deck">
+                        @foreach (Group group in Model.AllGroups) {
+                            if (!Model.ActualUserAsGroupMember.Contains(group.Id))
+                                continue;
+                            <div class="card mt-2" style="max-width: 20rem; min-width: 20rem;">
+                                <div class="card-body">
+                                    <img src="~/img/usuario.png" class="float-left rounded-circle" height="64" width="64">
+                                    <div class="message">
+                                        <h5 class="card-title">@group.Name</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted fa fa-map-marker"> @group.City</h6>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                @foreach (string groupCategory in Model.GroupCategories[group.Id]) {
+                                                    <span class="badge badge-info float-right mt-1  mr-1">@groupCategory</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a asp-controller="Groups" asp-action="Details" asp-route-id="@group.Id" class="stretched-link"> </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else {
+                    <div class="row mt-2">
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-header"><span class="badge badge-warning float-right">Ooops!!</span></div>
+                                <div class="card-body">Todavía no eres miembro de ningún grupo..</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
