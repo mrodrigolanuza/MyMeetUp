@@ -7,26 +7,25 @@ namespace MyMeetUp.Web.Models
 {
     public class Group : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = "Campo obligatorio")]
         [Display(Name = "Nombre")]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo obligatorio")]
         [StringLength(3000)]
         [Display(Name = "Sobre Nosotros..")]
         public string AboutUs { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo obligatorio")]
         [StringLength(50)]
         [Display(Name = "Pais")]
         public string Country { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo obligatorio")]
         [StringLength(50)]
         [Display(Name = "Ciudad")]
         public string City { get; set; }
 
-        [Required]
         [Display(Name = "Fecha Alta")]
         public DateTime CreationDate { get; set; }
         

@@ -1,10 +1,13 @@
 ﻿@*Using necesario para tener disponobles las extensiones sobre IWebHostEnvironmet*@
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostingEnvironment
+@inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @{
     var environment = hostingEnvironment.EnvironmentName;
     var applicationName = hostingEnvironment.ApplicationName;
     var title = $"{ViewData["Title"]} - {applicationName}";
+    var userSignedIn = await UserManager.GetUserAsync(User);
+    var userId = userSignedIn?.Id;
 }
 
 <!DOCTYPE html>
@@ -50,6 +53,20 @@
                                 <a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Index">
                                     <i class="fa fa-gear"></i>
                                     Área Administración
+                                </a>
+                            </li>
+                        }
+                        else if (SignInManager.IsSignedIn(User)) {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Groups" asp-action="Create" asp-route-userid="@userId">
+                                    <i class="fa fa-plus-square"></i>
+                                    Nuevo grupo
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Groups" asp-action="Index" asp-route-userid="@userId">
+                                    <i class="fa fa-cubes"></i>
+                                    Mis grupos
                                 </a>
                             </li>
                         }
