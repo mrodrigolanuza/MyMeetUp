@@ -1,0 +1,40 @@
+﻿@model MyMeetUp.Web.ViewModels.GroupIndexViewModel
+
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col">
+                <div class="mt-4 mb-2 shadow p-3 bg-white rounded"><h2><span><i class="fa fa-bookmark"></i></span> Grupos Categoría @Model.ByCategory</h2></div>
+            </div>
+        </div>
+        @if (Model.AllGroups != null && Model.AllGroups.Any()) {
+            foreach (Group group in Model.AllGroups) {
+                <div class="row mt-2">
+                    <div class="col">
+                        <div class="card bg-light text-center">
+                            <div class="card-header">
+                                @foreach (string groupCategory in Model.GroupCategories[group.Id]) {
+                                    <span class="badge badge-info float-right mt-1  mr-1">@groupCategory</span>
+                                }
+                            </div>
+                            <div class="card-body">
+                                <u><strong><h3 class="card-title">@group.Name</h3></strong></u>
+                                <p class="card-text">@group.AboutUs</p>
+                                <a asp-controller="Groups" asp-action="Details" asp-route-id="@group.Id" class="stretched-link"> </a>
+                                <p class="card-footer"><small class="text-muted">@($"{group.City} / {group.Country}") </small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else {
+            <div class="row mt-2">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header"><span class="badge badge-warning float-right">Sin grupos</span></div>
+                        <div class="card-body">La comunidad todavía no ha creado grupos de esta categoría..</div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>

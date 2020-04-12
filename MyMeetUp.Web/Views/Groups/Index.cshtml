@@ -3,7 +3,10 @@
     ViewData["Title"] = "Listado de Grupos";
 }
 
-@if (Model.UserId == null || Model.UserId == "") {
+@if (Model.ByCategory != null || Model.ByCategory != "") {
+    @await Html.PartialAsync("~/Views/Groups/_ExploringGroupsByCategory.cshtml", Model)
+}
+else if (Model.UserId == null || Model.UserId == "") {
     @await Html.PartialAsync("~/Views/Groups/_ExploringGroups.cshtml", Model)
 }
 else {

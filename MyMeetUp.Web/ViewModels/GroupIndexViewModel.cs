@@ -13,5 +13,6 @@ namespace MyMeetUp.Web.ViewModels
         public List<int> ActualUserAsGroupCoordinator{ get; set; }
         public List<int> ActualUserAsGroupMember { get; set; }
         public Dictionary<int, List<string>> GroupCategories { get; set; }
+        public string ByCategory { get; set; }
     }
 }

@@ -231,6 +231,19 @@ namespace MyMeetUp.Web.Controllers
             return userSignedIn;
         }
 
+        public async Task<IActionResult> ByCategory(int id) {
+            GroupIndexViewModel model = new GroupIndexViewModel();
+            model.ByCategory = await _context.GroupCategories.Where(gc => gc.Id == id).Select(gc => gc.Name).FirstOrDefaultAsync();
+            model.AllGroups = await _context.Group_GroupCategories
+                                .Include(ggc => ggc.Group)
+                                .Where(ggc => ggc.GroupCategoryId == id)
+                                .Select(ggc=>ggc.Group)
+                                .ToListAsync();
+            await GetGroupCategories(model);
+
+            return View("Index", model);
+        }
+
         // GET: Groups/Edit/5
         //public async Task<IActionResult> Edit(int? id)
         //{

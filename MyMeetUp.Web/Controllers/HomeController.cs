@@ -28,9 +28,33 @@ namespace MyMeetUp.Web.Controllers
 
         public async Task<IActionResult> Index() {
 
-            //Obtener la infomación de los grupos más destacados
-            List<Group> HighlightedGroups = await _context.Groups.Take(4).ToListAsync();
-            List<GroupCategory> highlightedGroupCategories = await _context.GroupCategories.Take(4).ToListAsync();
+            //Obtener la infomación de los grupos con más categorias asociadas
+            List<int> moreCategorizedGroupIds = await _context.Group_GroupCategories
+                        .GroupBy(ggc => ggc.GroupId)
+                        .Select(ggc => new { GroupId = ggc.Key, CategoriesAssociated = ggc.Count() })
+                        .OrderByDescending(g => g.CategoriesAssociated)
+                        .Select(ggc => ggc.GroupId)
+                        .Take(4)
+                        .ToListAsync();
+
+            List<Group> HighlightedGroups = await _context.Groups
+                            .Where(g => moreCategorizedGroupIds.Contains(g.Id))
+                            .ToListAsync();
+
+            //Obtener las categorias de grupos más utilizadas
+            List<int> moreUsedGroupCategoriesIds = await _context.Group_GroupCategories
+                        .GroupBy(ggc => ggc.GroupCategoryId)
+                        .Select(ggc => new { GroupCategoryId = ggc.Key, NumberOfGroupsWithCategoriesAssociated = ggc.Count() })
+                        .OrderByDescending(g => g.NumberOfGroupsWithCategoriesAssociated)
+                        .Select(ggc => ggc.GroupCategoryId)
+                        .Take(4)
+                        .ToListAsync();
+
+            List<GroupCategory> highlightedGroupCategories = await _context.GroupCategories
+                                .Where(gc => moreUsedGroupCategoriesIds.Contains(gc.Id))
+                                .ToListAsync();
+
+
             HomeIndexViewModel homeIndexViewModel = new HomeIndexViewModel { 
                 Groups = HighlightedGroups, 
                 GroupCategories = highlightedGroupCategories
