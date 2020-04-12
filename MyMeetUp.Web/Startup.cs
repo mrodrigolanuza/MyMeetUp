@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using MyMeetUp.Web.Configuration;
 using MyMeetUp.Web.Models;
 using Microsoft.AspNetCore.Http;
+using MyMeetUp.Web.Filters;
 
 namespace MyMeetUp.Web
 {
@@ -34,7 +35,6 @@ namespace MyMeetUp.Web
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings_Dev"));
             ConfigureServices(services);
         }
-
         public void ConfigureDevelopment(IApplicationBuilder app, IWebHostEnvironment env) {
             env.ApplicationName = $"{_applicationName} [Dev]";
             app.UseDeveloperExceptionPage();
@@ -66,7 +66,9 @@ namespace MyMeetUp.Web
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(config => {
+                config.Filters.Add(typeof(DebugExceptionFilter));   //Global application filter for catching exceptions and logging them into the console.
+            });
             services.AddRazorPages();
             services.AddHealthChecks();
         }
