@@ -33,6 +33,7 @@ namespace MyMeetUp.Web
         public void ConfigureDevelopmentServices(IServiceCollection services) {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyMeetUpDb_Dev")));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings_Dev"));
+            ConfigureScopedServices(services);
             ConfigureServices(services);
         }
         public void ConfigureDevelopment(IApplicationBuilder app, IWebHostEnvironment env) {
@@ -46,6 +47,7 @@ namespace MyMeetUp.Web
         public void ConfigureProductionServices(IServiceCollection services) {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyMeetUpDb_Prd")));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings_Prd"));
+            ConfigureScopedServices(services);
             ConfigureServices(services);
         }
         public void ConfigureProduction(IApplicationBuilder app, IWebHostEnvironment env) {
@@ -54,7 +56,7 @@ namespace MyMeetUp.Web
             app.UseHsts();      // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             Configure(app, env);
         }
-        
+
         //Services /////////////////////////////////////////////////////////////////////////////////
         public void ConfigureServices(IServiceCollection services) {
             services.Configure<CookiePolicyOptions>(options =>
@@ -96,6 +98,12 @@ namespace MyMeetUp.Web
                 
                 endpoints.MapRazorPages();
             });
+        }
+
+        private void ConfigureScopedServices(IServiceCollection services) {
+            // Dependency Injection
+            //services.AddApplicationInsightsTelemetry();
+            //services.AddScoped<IMailService, MailService>();   
         }
     }
 }
