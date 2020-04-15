@@ -16,6 +16,8 @@ using MyMeetUp.Web.Configuration;
 using MyMeetUp.Web.Models;
 using Microsoft.AspNetCore.Http;
 using MyMeetUp.Web.Filters;
+using MyMeetUp.Web.Services.Interfaces;
+using MyMeetUp.Web.Services;
 
 namespace MyMeetUp.Web
 {
@@ -33,6 +35,7 @@ namespace MyMeetUp.Web
         public void ConfigureDevelopmentServices(IServiceCollection services) {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyMeetUpDb_Dev")));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings_Dev"));
+            services.Configure<EventQueueSettings>(Configuration.GetSection("EventQueue"));
             ConfigureScopedServices(services);
             ConfigureServices(services);
         }
@@ -47,6 +50,7 @@ namespace MyMeetUp.Web
         public void ConfigureProductionServices(IServiceCollection services) {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyMeetUpDb_Prd")));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings_Prd"));
+            services.Configure<EventQueueSettings>(Configuration.GetSection("EventQueue"));
             ConfigureScopedServices(services);
             ConfigureServices(services);
         }
@@ -103,7 +107,7 @@ namespace MyMeetUp.Web
         private void ConfigureScopedServices(IServiceCollection services) {
             // Dependency Injection
             //services.AddApplicationInsightsTelemetry();
-            //services.AddScoped<IMailService, MailService>();   
+            services.AddScoped<IQueueService, AzureStorageQueueService>();   
         }
     }
 }
