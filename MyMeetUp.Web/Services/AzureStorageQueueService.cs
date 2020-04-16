@@ -1,6 +1,5 @@
 ﻿using MyMeetUp.Web.Services.Interfaces;
 using System;
-using Microsoft.Azure;                  // Namespace for CloudConfigurationManager
 using Microsoft.Azure.Storage;          // Namespace for CloudStorageAccount
 using Microsoft.Azure.Storage.Queue;    // Namespace for Queue storage types
 using Microsoft.Extensions.Options;
