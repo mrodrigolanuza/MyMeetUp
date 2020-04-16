@@ -23,7 +23,7 @@ namespace MyMeetUp.Web.Services
             _eventQueueSettings = eventQueueSettings;
         }
 
-        public async Task<bool> SendMessage(string message) {
+        public async Task<bool> SendMessageAsync(string message) {
             // Create the queue if it doesn't already exist
             if (await InitializeConnectionWithAzureStorageQueueAsync()) {
                 CloudQueueMessage cloudQueueMessage = new CloudQueueMessage(message);

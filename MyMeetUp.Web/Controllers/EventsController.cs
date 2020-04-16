@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyMeetUp.Web.Data;
 using MyMeetUp.Web.Models;
+using MyMeetUp.Web.Services.Interfaces;
 using MyMeetUp.Web.ViewModels;
 
 namespace MyMeetUp.Web.Controllers
@@ -19,12 +20,17 @@ namespace MyMeetUp.Web.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger _logger;
+        private readonly IQueueService _eventQueueService;
 
-        public EventsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<EventsController> logger)
+        public EventsController(ApplicationDbContext context, 
+                                UserManager<ApplicationUser> userManager, 
+                                ILogger<EventsController> logger,
+                                IQueueService eventQueueService)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
+            _eventQueueService = eventQueueService;
         }
 
         //// GET: Events
@@ -205,6 +211,8 @@ namespace MyMeetUp.Web.Controllers
             try {
                 _context.Events.Add(groupEvent);
                 await _context.SaveChangesAsync();
+                int newEventId = _context.Events.FirstOrDefault(e => e.Title == groupEvent.Title).Id;
+                await _eventQueueService.SendMessageAsync($"{EventQueueMessages.EVENT_CREATED}:{newEventId}");
                 _logger.LogInformation($"Creado nuevo evento OK >> {groupEvent.Title.ToUpper()}");
             } catch (Exception e) {
                 _logger.LogCritical($"EXCEPCIÓN: {e.Message}");

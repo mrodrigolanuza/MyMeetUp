@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyMeetUp.Web.Data;
 using MyMeetUp.Web.Models;
+using MyMeetUp.Web.Services.Interfaces;
 using MyMeetUp.Web.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,18 @@ namespace MyMeetUp.Web.Controllers
         private readonly ILogger _logger;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-            
+        private readonly IQueueService _eventQueueService;
 
-        public GroupsController(ApplicationDbContext context, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ILogger<GroupsController> logger) {
+        public GroupsController(ApplicationDbContext context, 
+                                SignInManager<ApplicationUser> signInManager, 
+                                UserManager<ApplicationUser> userManager, 
+                                ILogger<GroupsController> logger,
+                                IQueueService eventQueueService) {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _eventQueueService = eventQueueService;
         }
 
         // GET: Groups
@@ -125,6 +131,7 @@ namespace MyMeetUp.Web.Controllers
 
                 _context.GroupMembers.Add(newGroupMember);
                 await _context.SaveChangesAsync();
+                await _eventQueueService.SendMessageAsync($"{EventQueueMessages.NEW_GROUP_MEMBER}:{newGroupMember.GroupId}:{newGroupMember.ApplicationUserId}");
             } catch (Exception e) {
                 _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
                 return Json(new { success = false });
@@ -183,6 +190,7 @@ namespace MyMeetUp.Web.Controllers
 
                     await _context.SaveChangesAsync();
                     dbContextTransaction.Commit();
+                    await _eventQueueService.SendMessageAsync($"{EventQueueMessages.GROUP_CREATED}:{newGroupId}");
                     return RedirectToAction("Index", "Groups", new { userId = userSignedIn });
 
                 } catch (Exception e) {
