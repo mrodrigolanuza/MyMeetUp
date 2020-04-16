@@ -31,4 +31,9 @@
     <Folder Include="Areas\Admin\Models\" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyMeetUp.Web.Models\MyMeetUp.Web.Models.csproj" />
+  </ItemGroup>
+
 </Project>
