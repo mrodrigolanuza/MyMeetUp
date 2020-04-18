@@ -106,8 +106,8 @@ namespace MyMeetUp.Web
 
         private void ConfigureScopedServices(IServiceCollection services) {
             // Dependency Injection
-            //services.AddApplicationInsightsTelemetry();
-            services.AddScoped<IQueueService, AzureStorageQueueService>();   
+            services.AddScoped<IQueueService, AzureStorageQueueService>();
+            services.AddApplicationInsightsTelemetry();
         }
     }
 }

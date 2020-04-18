@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>aspnet-MyMeetUp.Web-670849D4-4F7C-44C2-AA21-ECD8DF2284D6</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/8ab19c11-8ee7-427c-a4ff-7cc8a2251a8c/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/MyMeetUp.Web</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.1" />
@@ -34,6 +36,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyMeetUp.Web.Models\MyMeetUp.Web.Models.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
