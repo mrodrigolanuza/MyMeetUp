@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -211,14 +212,19 @@ namespace MyMeetUp.Web.Controllers
             try {
                 _context.Events.Add(groupEvent);
                 await _context.SaveChangesAsync();
-                int newEventId = _context.Events.FirstOrDefault(e => e.Title == groupEvent.Title).Id;
-                await _eventQueueService.SendMessageAsync($"{EventQueueMessages.EVENT_CREATED};{newEventId}");
+                await SendNewEventMessageToEventQueue(groupEvent);
                 _logger.LogInformation($"Creado nuevo evento OK >> {groupEvent.Title.ToUpper()}");
             } catch (Exception e) {
                 _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
             }
 
             return RedirectToAction("Details", "Groups", new { id = groupEvent.GroupId });
+        }
+
+        private async Task SendNewEventMessageToEventQueue(Event groupEvent) {
+            int newEventId = _context.Events.FirstOrDefault(e => e.Title == groupEvent.Title).Id;
+            string newEventDetailsURI = HttpContext.Request.GetDisplayUrl().Replace("Create", $"Details/{newEventId}");
+            await _eventQueueService.SendMessageAsync($"{EventQueueMessages.EVENT_CREATED};{newEventId};{newEventDetailsURI}");
         }
 
         // GET: Events/Edit/5

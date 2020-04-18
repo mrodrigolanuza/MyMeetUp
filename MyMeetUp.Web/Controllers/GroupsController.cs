@@ -211,14 +211,6 @@ namespace MyMeetUp.Web.Controllers
         }
 
         private async Task SendNewGroupMessageToEventQueue(int newGroupId, GroupCreateViewModel group) {
-            //Microsoft.AspNetCore.Mvc.Routing.UrlHelperBase url;
-            //var pathBase = HttpContext.Request.PathBase;
-            //var baseUrl = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
-            //string a = _hostingEnvirontment.EnvironmentName;
-            //a = _hostingEnvirontment.ApplicationName;
-            //string result = display.Substring(0, display.IndexOf(HttpContext.Request.Path));
-            //string absolutePath = HttpContext.Request.IsHttps? $"https://{HttpContext.Request.Host.Value}/Groups/Details/{newGroupId}" : $"http://{HttpContext.Request.Host.Value}/Groups/Details/{newGroupId}";
-
             StringBuilder groupCategories = new StringBuilder();
             foreach (int groupCategory in group.GroupCategoriesSelected) {
                 groupCategories.Append(";" + groupCategory);

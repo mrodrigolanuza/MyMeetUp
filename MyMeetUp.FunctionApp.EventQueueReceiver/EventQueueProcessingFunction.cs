@@ -25,6 +25,11 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
             POS_INI_GROUP_CATEGORIES_LIST = 2
         }
 
+        private enum EVENT_CREATED_ARGS : int { 
+            EVENTID = 0,
+            EVENT_DETAIL_URI = 1
+        }
+
         public EventQueueProcessingFunction(ApplicationDbContext context) {
             _context = context;
         }
@@ -37,7 +42,6 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
                 LogEventAsProcessedOK(myQueueItem, log);
             } catch (Exception ex) {
                 LogEventAsProcessedWithException(myQueueItem, log, ex);
-                SendNewsletterToUsers($"Event >> {eventType} not recognized!!");
             }
         }
 
@@ -59,10 +63,9 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
                     PerformGroupCreationAssociatedActions();
                     break;
                 case EventQueueMessages.EVENT_CREATED:
-                    SendNewsletterToUsers($"Event >> {eventType} recived!!");
+                    PerformEventCreationAssociatedActions();
                     break;
                 case EventQueueMessages.NEW_GROUP_MEMBER:
-                    SendNewsletterToUsers($"Event >> {eventType} recived!!");
                     break;
                 default:
                     throw new Exception("Queue message not recognized.");
@@ -122,25 +125,69 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
             }
         }
 
+        private async void PerformEventCreationAssociatedActions() {
+            int newEventId = int.Parse(eventArgs[(int)EVENT_CREATED_ARGS.EVENTID]);
+            string eventDetailsUri = eventArgs[(int)EVENT_CREATED_ARGS.EVENT_DETAIL_URI];
+
+            //Event info
+            Event newEvent = _context.Events
+                                  .Where(e => e.Id == newEventId)
+                                  .FirstOrDefault();
+
+            //Group associated
+            Group group = _context.Events
+                                  .Include(e => e.Group)
+                                  .Where(e => e.Id == newEventId)
+                                  .Select(e => e.Group)
+                                  .FirstOrDefault();
+            
+            //List of group members
+            List<ApplicationUser> groupMembers = _context.GroupMembers
+                                            .Include(gm => gm.ApplicationUser)
+                                            .Include(gm => gm.GroupMemberProfile)
+                                            .Where(gm => gm.GroupId == group.Id && gm.GroupMemberProfile.Name == "MEMBER")
+                                            .Select(gm => gm.ApplicationUser)
+                                            .ToList();
+
+            //Send personalized email to every single user with the new group info
+            string apiKey = Environment.GetEnvironmentVariable("MyMeetupSendgridApiKey");
+            var client = new SendGridClient(apiKey);
+            StringBuilder NotificationEmailContent = new StringBuilder();
+            foreach (ApplicationUser user in groupMembers) {
+                NotificationEmailContent.Append($"Hola {user.Name}!");
+                NotificationEmailContent.Append("</br>");
+                NotificationEmailContent.Append("</br>");
+                NotificationEmailContent.Append("<p>Desde el equipo de MyMeetUp queremos comunicarte que estás de enhorabuena!</br>");
+                NotificationEmailContent.Append($"Acaba de crearse recientemente un nuevo evento organizado por el grupo <b>{group.Name}</b>.</p>");
+                NotificationEmailContent.Append("<p>Esto son los datos del evento:");
+                NotificationEmailContent.Append("<ul>");
+                NotificationEmailContent.Append($"<li>Título: <b><i>{newEvent.Title}</i></b></li>");
+                NotificationEmailContent.Append($"<li>Dónde: <i>{newEvent.Address} - {newEvent.City} - {newEvent.Country}</i></li>");
+                NotificationEmailContent.Append($"<li>Cuándo: <i>{newEvent.FechaHora}</i></li>");
+                NotificationEmailContent.Append("</ul></p>");
+                NotificationEmailContent.Append($"<p><u>Descripción</u><br><i>{newEvent.Description}</i></li></p>");
+                NotificationEmailContent.Append($"<p>Si quieres acceder al evento directamente, puedes utilizar el siguiente enlace: <a href=\"{eventDetailsUri}\" > Quiero saber más sobre este evento!</a></p>");
+                NotificationEmailContent.Append("<p>Un saludo,</br>");
+                NotificationEmailContent.Append("Equipo MyMeetUp</p>");
+
+                var msg = new SendGridMessage()
+                {
+                    From = new EmailAddress("newsletter@mymeetup.com", "MyMeetUp Team"),
+                    Subject = "MyMeetUp: Atención Nuevo Evento!!",
+                    HtmlContent = NotificationEmailContent.ToString()
+                };
+                msg.AddTo(new EmailAddress("marcosrlanuza@hotmail.com"));
+                var response = await client.SendEmailAsync(msg);
+                NotificationEmailContent.Clear();
+            }
+        }
+
         private void LogEventAsProcessedOK(string myQueueItem, ILogger log) {
             log.LogInformation($"C# Queue trigger function processed: {myQueueItem} >>> Sending SendGridMail to marcosrlanuza@hotmail.com");
         }
 
         private void LogEventAsProcessedWithException(string myQueueItem, ILogger log, Exception ex) {
             log.LogError($"EXCEPTION >> EventQueueProcessingFunction >> Queue message received: '{myQueueItem}' >>> Exception Message: {ex.Message}");
-        }
-
-        private async void SendNewsletterToUsers(string message) {
-            string apiKey = Environment.GetEnvironmentVariable("MyMeetupSendgridApiKey");
-            var client = new SendGridClient(apiKey);
-            var msg = new SendGridMessage()
-            {
-                From = new EmailAddress("newsletter@fpplusplustechcommunity.com", "FP++ TechCommunity Team"),
-                Subject = message,
-                HtmlContent = "Enviado Sendgrid Mail mediante envento en Queue"
-            };
-            msg.AddTo(new EmailAddress("marcosrlanuza@hotmail.com"));
-            var response = await client.SendEmailAsync(msg);
         }
     }
 }
