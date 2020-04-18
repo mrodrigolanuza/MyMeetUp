@@ -18,6 +18,8 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
         private readonly ApplicationDbContext _context;
         private List<string> eventArgs;
         private string eventType;
+        private const string COORDINATOR = "COORDINATOR";
+        private const string MEMBER = "MEMBER";
 
         private enum GROUP_CREATED_EVENT_ARGS : int { 
             GROUPID = 0,
@@ -28,6 +30,11 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
         private enum EVENT_CREATED_ARGS : int { 
             EVENTID = 0,
             EVENT_DETAIL_URI = 1
+        }
+
+        private enum NEW_GROUP_MEMBER : int {
+            GROUPID = 0,
+            USERID = 1
         }
 
         public EventQueueProcessingFunction(ApplicationDbContext context) {
@@ -66,6 +73,7 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
                     PerformEventCreationAssociatedActions();
                     break;
                 case EventQueueMessages.NEW_GROUP_MEMBER:
+                    PerformNewGroupMemberAssociatedActions();
                     break;
                 default:
                     throw new Exception("Queue message not recognized.");
@@ -98,8 +106,7 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
                                             .ToList();
 
             //Send personalized email to every single user with the new group info
-            string apiKey = Environment.GetEnvironmentVariable("MyMeetupSendgridApiKey");
-            var client = new SendGridClient(apiKey);
+            SendGridClient client = GetSendGridClient();
             StringBuilder NotificationEmailContent = new StringBuilder();
             foreach (ApplicationUser user in similarGroupsUsers) {
                 NotificationEmailContent.Append($"Hola {user.Name}!");
@@ -145,13 +152,12 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
             List<ApplicationUser> groupMembers = _context.GroupMembers
                                             .Include(gm => gm.ApplicationUser)
                                             .Include(gm => gm.GroupMemberProfile)
-                                            .Where(gm => gm.GroupId == group.Id && gm.GroupMemberProfile.Name == "MEMBER")
+                                            .Where(gm => gm.GroupId == group.Id && gm.GroupMemberProfile.Name == MEMBER)
                                             .Select(gm => gm.ApplicationUser)
                                             .ToList();
 
             //Send personalized email to every single user with the new group info
-            string apiKey = Environment.GetEnvironmentVariable("MyMeetupSendgridApiKey");
-            var client = new SendGridClient(apiKey);
+            SendGridClient client = GetSendGridClient();
             StringBuilder NotificationEmailContent = new StringBuilder();
             foreach (ApplicationUser user in groupMembers) {
                 NotificationEmailContent.Append($"Hola {user.Name}!");
@@ -180,6 +186,62 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
                 var response = await client.SendEmailAsync(msg);
                 NotificationEmailContent.Clear();
             }
+        }
+
+        private async void PerformNewGroupMemberAssociatedActions() {
+            int groupId = int.Parse(eventArgs[(int)NEW_GROUP_MEMBER.GROUPID]);
+            string newUserId = eventArgs[(int)NEW_GROUP_MEMBER.USERID];
+
+            //Get group info
+            Group group = _context.Groups.Where(g => g.Id == groupId).FirstOrDefault();
+            
+            //Get group coordinators
+            List<ApplicationUser> groupCoordinators = _context.GroupMembers
+                                                            .Include(gm => gm.GroupMemberProfile)
+                                                            .Include(gm => gm.ApplicationUser)
+                                                            .Where(gm => gm.GroupId == groupId && gm.GroupMemberProfile.Name == COORDINATOR)
+                                                            .Select(gm => gm.ApplicationUser)
+                                                            .ToList();
+
+            //Get new member info
+            ApplicationUser newMemberInfo = _context.GroupMembers
+                                                    .Include(gm => gm.ApplicationUser)
+                                                    .Where(gm => gm.ApplicationUserId == newUserId)
+                                                    .Select(gm => gm.ApplicationUser)
+                                                    .FirstOrDefault();
+            //Send email to group coordinators
+            SendGridClient client = GetSendGridClient();
+            StringBuilder NotificationEmailContent = new StringBuilder();
+            foreach (ApplicationUser coordinator in groupCoordinators) {
+                NotificationEmailContent.Append($"Hola {coordinator.Name},");
+                NotificationEmailContent.Append("</br>");
+                NotificationEmailContent.Append("</br>");
+                NotificationEmailContent.Append($"<p>Desde el equipo de MyMeetUp queremos informarle como coordinador de grupo <b>{group.Name}</b>,</br>");
+                NotificationEmailContent.Append($"que acaba de darse de alta un nuevo miembro. Enhorabuena!.</p>");
+                NotificationEmailContent.Append("<p><ul>");
+                NotificationEmailContent.Append($"<li><b><i>{newMemberInfo.Name} {newMemberInfo.Surname}</i></b></li>");
+                NotificationEmailContent.Append($"<li><i>{newMemberInfo.Email}</i></li>");
+                NotificationEmailContent.Append($"<li><i>{newMemberInfo.City} - {newMemberInfo.Country}</i></li>");
+                NotificationEmailContent.Append("</ul></p>");
+                NotificationEmailContent.Append("<p>Un saludo,</br>");
+                NotificationEmailContent.Append("Equipo MyMeetUp</p>");
+
+                var msg = new SendGridMessage()
+                {
+                    From = new EmailAddress("newsletter@mymeetup.com", "MyMeetUp Team"),
+                    Subject = "MyMeetUp: Nuevo Miembro en tu Grupo!!",
+                    HtmlContent = NotificationEmailContent.ToString()
+                };
+                msg.AddTo(new EmailAddress("marcosrlanuza@hotmail.com"));
+                var response = await client.SendEmailAsync(msg);
+                NotificationEmailContent.Clear();
+            }
+        }
+
+        private SendGridClient GetSendGridClient() {
+            string apiKey = Environment.GetEnvironmentVariable("MyMeetupSendgridApiKey");
+            var client = new SendGridClient(apiKey);
+            return client;
         }
 
         private void LogEventAsProcessedOK(string myQueueItem, ILogger log) {
