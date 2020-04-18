@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMeetUp.Web", "MyMeetUp.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMeetUp.Web.Models", "MyMeetUp.Web.Models\MyMeetUp.Web.Models.csproj", "{2B40E9D4-AA7C-45BE-A1E2-80F44EA79B7A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMeetUp.FunctionApp.QueueEventReceiver", "MyMeetUp.FunctionApp.QueueEventReceiver\MyMeetUp.FunctionApp.QueueEventReceiver.csproj", "{691AC556-8421-4113-BF6E-54F70687FD50}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMeetUp.FunctionApp.EventQueueReceiver", "MyMeetUp.FunctionApp.EventQueueReceiver\MyMeetUp.FunctionApp.EventQueueReceiver.csproj", "{A6743BE5-12C6-4327-8FD3-EA0388506EDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMeetUp.FunctionApp.EventQueueReceiver", "MyMeetUp.FunctionApp.EventQueueReceiver\MyMeetUp.FunctionApp.EventQueueReceiver.csproj", "{A6743BE5-12C6-4327-8FD3-EA0388506EDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +23,6 @@ Global
 		{2B40E9D4-AA7C-45BE-A1E2-80F44EA79B7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B40E9D4-AA7C-45BE-A1E2-80F44EA79B7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B40E9D4-AA7C-45BE-A1E2-80F44EA79B7A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{691AC556-8421-4113-BF6E-54F70687FD50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{691AC556-8421-4113-BF6E-54F70687FD50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{691AC556-8421-4113-BF6E-54F70687FD50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{691AC556-8421-4113-BF6E-54F70687FD50}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A6743BE5-12C6-4327-8FD3-EA0388506EDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6743BE5-12C6-4327-8FD3-EA0388506EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6743BE5-12C6-4327-8FD3-EA0388506EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
