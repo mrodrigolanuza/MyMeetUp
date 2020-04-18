@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,7 @@ using MyMeetUp.Web.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MyMeetUp.Web.Controllers
@@ -21,17 +24,20 @@ namespace MyMeetUp.Web.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IQueueService _eventQueueService;
+        private readonly IWebHostEnvironment _hostingEnvirontment;
 
         public GroupsController(ApplicationDbContext context, 
                                 SignInManager<ApplicationUser> signInManager, 
                                 UserManager<ApplicationUser> userManager, 
                                 ILogger<GroupsController> logger,
-                                IQueueService eventQueueService) {
+                                IQueueService eventQueueService,
+                                IWebHostEnvironment environment ) {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
             _eventQueueService = eventQueueService;
+            _hostingEnvirontment = environment;
         }
 
         // GET: Groups
@@ -131,7 +137,7 @@ namespace MyMeetUp.Web.Controllers
 
                 _context.GroupMembers.Add(newGroupMember);
                 await _context.SaveChangesAsync();
-                await _eventQueueService.SendMessageAsync($"{EventQueueMessages.NEW_GROUP_MEMBER}:{newGroupMember.GroupId}:{newGroupMember.ApplicationUserId}");
+                await _eventQueueService.SendMessageAsync($"{EventQueueMessages.NEW_GROUP_MEMBER};{newGroupMember.GroupId};{newGroupMember.ApplicationUserId}");
             } catch (Exception e) {
                 _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
                 return Json(new { success = false });
@@ -190,7 +196,9 @@ namespace MyMeetUp.Web.Controllers
 
                     await _context.SaveChangesAsync();
                     dbContextTransaction.Commit();
-                    await _eventQueueService.SendMessageAsync($"{EventQueueMessages.GROUP_CREATED}:{newGroupId}");
+                    
+                    await SendNewGroupMessageToEventQueue(newGroupId, group);
+                    
                     return RedirectToAction("Index", "Groups", new { userId = userSignedIn });
 
                 } catch (Exception e) {
@@ -200,6 +208,23 @@ namespace MyMeetUp.Web.Controllers
                 }
             }
                 
+        }
+
+        private async Task SendNewGroupMessageToEventQueue(int newGroupId, GroupCreateViewModel group) {
+            //Microsoft.AspNetCore.Mvc.Routing.UrlHelperBase url;
+            //var pathBase = HttpContext.Request.PathBase;
+            //var baseUrl = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
+            //string a = _hostingEnvirontment.EnvironmentName;
+            //a = _hostingEnvirontment.ApplicationName;
+            //string result = display.Substring(0, display.IndexOf(HttpContext.Request.Path));
+            //string absolutePath = HttpContext.Request.IsHttps? $"https://{HttpContext.Request.Host.Value}/Groups/Details/{newGroupId}" : $"http://{HttpContext.Request.Host.Value}/Groups/Details/{newGroupId}";
+
+            StringBuilder groupCategories = new StringBuilder();
+            foreach (int groupCategory in group.GroupCategoriesSelected) {
+                groupCategories.Append(";" + groupCategory);
+            }
+            string newGroupDetailsURI = HttpContext.Request.GetDisplayUrl().Replace("Create", $"Details/{newGroupId}");
+            await _eventQueueService.SendMessageAsync($"{EventQueueMessages.GROUP_CREATED};{newGroupId};{newGroupDetailsURI}{groupCategories.ToString()}");
         }
 
         private async Task CreatesNewGroup(GroupCreateViewModel group) {

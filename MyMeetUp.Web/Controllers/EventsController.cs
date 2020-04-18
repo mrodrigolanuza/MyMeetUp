@@ -212,7 +212,7 @@ namespace MyMeetUp.Web.Controllers
                 _context.Events.Add(groupEvent);
                 await _context.SaveChangesAsync();
                 int newEventId = _context.Events.FirstOrDefault(e => e.Title == groupEvent.Title).Id;
-                await _eventQueueService.SendMessageAsync($"{EventQueueMessages.EVENT_CREATED}:{newEventId}");
+                await _eventQueueService.SendMessageAsync($"{EventQueueMessages.EVENT_CREATED};{newEventId}");
                 _logger.LogInformation($"Creado nuevo evento OK >> {groupEvent.Title.ToUpper()}");
             } catch (Exception e) {
                 _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
