@@ -13,6 +13,7 @@ using MyMeetUp.Web.Data;
 using MyMeetUp.Web.Models;
 using MyMeetUp.Web.Services.Interfaces;
 using MyMeetUp.Web.ViewModels;
+using Microsoft.ApplicationInsights;
 
 namespace MyMeetUp.Web.Controllers
 {
@@ -22,24 +23,20 @@ namespace MyMeetUp.Web.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger _logger;
         private readonly IQueueService _eventQueueService;
+        private TelemetryClient _telemetryClient;
 
         public EventsController(ApplicationDbContext context, 
                                 UserManager<ApplicationUser> userManager, 
                                 ILogger<EventsController> logger,
-                                IQueueService eventQueueService)
+                                IQueueService eventQueueService,
+                                TelemetryClient telemetry)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
             _eventQueueService = eventQueueService;
+            _telemetryClient = telemetry;
         }
-
-        //// GET: Events
-        //public async Task<IActionResult> Index()
-        //{
-        //    var applicationDbContext = _context.Events.Include(@ => @.EventCategory).Include(@ => @.Group);
-        //    return View(await applicationDbContext.ToListAsync());
-        //}
 
         // GET: Events/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -87,6 +84,11 @@ namespace MyMeetUp.Web.Controllers
                 EventAttendees = eventAttendeesList,
                 EventComments = eventComments
             };
+
+            var dictionay = new Dictionary<string, string>();
+            dictionay.Add("Event Details", eventSelected.Title);
+            _telemetryClient.TrackEvent("UserInteraction", dictionay);
+            
             return View(eventInfo);
         }
 
@@ -125,6 +127,10 @@ namespace MyMeetUp.Web.Controllers
                 return Ok(new { success = false });
             }
 
+            var dictionay = new Dictionary<string, string>();
+            dictionay.Add("Event New Attendee", eventAttendance.ApplicationUser.Name);
+            _telemetryClient.TrackEvent("UserInteraction", dictionay);
+
             return Ok(new { success = true });
         }
 
@@ -141,6 +147,11 @@ namespace MyMeetUp.Web.Controllers
                 _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
                 return Json(new { success = false });
             }
+
+            var dictionay = new Dictionary<string, string>();
+            dictionay.Add("Event Leave My Seat", $"userId : {userId}");
+            _telemetryClient.TrackEvent("UserInteraction", dictionay);
+
             return Json(new { success = true });
         }
 
@@ -178,6 +189,10 @@ namespace MyMeetUp.Web.Controllers
             try {
                 _context.EventComments.Add(newEventComment);
                 await _context.SaveChangesAsync();
+
+                var dictionay = new Dictionary<string, string>();
+                dictionay.Add("Event New Comment", $"eventId: {eventId}");
+                _telemetryClient.TrackEvent("UserInteraction", dictionay);
             } 
             catch (Exception e) {
                 _logger.LogCritical($"EXCEPCION en NewComment: {e.Message}");
@@ -218,104 +233,22 @@ namespace MyMeetUp.Web.Controllers
                 _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
             }
 
+            var dictionay = new Dictionary<string, string>();
+            dictionay.Add("Event Created", groupEvent.Title);
+            _telemetryClient.TrackEvent("UserInteraction", dictionay);
+
             return RedirectToAction("Details", "Groups", new { id = groupEvent.GroupId });
         }
 
         private async Task SendNewEventMessageToEventQueue(Event groupEvent) {
             int newEventId = _context.Events.FirstOrDefault(e => e.Title == groupEvent.Title).Id;
             string newEventDetailsURI = HttpContext.Request.GetDisplayUrl().Replace("Create", $"Details/{newEventId}");
-            await _eventQueueService.SendMessageAsync($"{EventQueueMessages.EVENT_CREATED};{newEventId};{newEventDetailsURI}");
+            string message = $"{EventQueueMessages.EVENT_CREATED};{newEventId};{newEventDetailsURI}";
+            await _eventQueueService.SendMessageAsync(message);
+            
+            var dictionay = new Dictionary<string, string>();
+            dictionay.Add("Queue Message", message);
+            _telemetryClient.TrackEvent("UserInteraction", dictionay);
         }
-
-        // GET: Events/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var @event = await _context.Events.FindAsync(id);
-        //    if (@event == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["EventCategoryId"] = new SelectList(_context.EventCategories, "Id", "Name", @event.EventCategoryId);
-        //    ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "AboutUs", @event.GroupId);
-        //    return View(@event);
-        //}
-
-        // POST: Events/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Title,Description,Address,City,Country,FechaHora,GroupId,EventCategoryId,Id")] Event @event)
-        //{
-        //    if (id != @event.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(@event);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!EventExists(@event.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["EventCategoryId"] = new SelectList(_context.EventCategories, "Id", "Name", @event.EventCategoryId);
-        //    ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "AboutUs", @event.GroupId);
-        //    return View(@event);
-        //}
-
-        // GET: Events/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var @event = await _context.Events
-        //        .Include(@ => @.EventCategory)
-        //        .Include(@ => @.Group)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (@event == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(@event);
-        //}
-
-        // POST: Events/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var @event = await _context.Events.FindAsync(id);
-        //    _context.Events.Remove(@event);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool EventExists(int id)
-        //{
-        //    return _context.Events.Any(e => e.Id == id);
-        //}
     }
 }

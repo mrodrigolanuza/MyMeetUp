@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights;
 
 namespace MyMeetUp.Web.Controllers
 {
@@ -25,19 +26,22 @@ namespace MyMeetUp.Web.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IQueueService _eventQueueService;
         private readonly IWebHostEnvironment _hostingEnvirontment;
+        private TelemetryClient _telemetryClient;
 
         public GroupsController(ApplicationDbContext context, 
                                 SignInManager<ApplicationUser> signInManager, 
                                 UserManager<ApplicationUser> userManager, 
                                 ILogger<GroupsController> logger,
                                 IQueueService eventQueueService,
-                                IWebHostEnvironment environment ) {
+                                IWebHostEnvironment environment,
+                                TelemetryClient telemetry) {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
             _eventQueueService = eventQueueService;
             _hostingEnvirontment = environment;
+            _telemetryClient = telemetry;
         }
 
         // GET: Groups
@@ -118,6 +122,10 @@ namespace MyMeetUp.Web.Controllers
                 MembersTotalNumber = numGroupMembers
             };
 
+            var dictionay = new Dictionary<string, string>();
+            dictionay.Add("Group Details", groupSelected.Name);
+            _telemetryClient.TrackEvent("UserInteraction", dictionay);
+
             return View(groupDetailsViewModel);
         }
 
@@ -137,11 +145,18 @@ namespace MyMeetUp.Web.Controllers
 
                 _context.GroupMembers.Add(newGroupMember);
                 await _context.SaveChangesAsync();
-                await _eventQueueService.SendMessageAsync($"{EventQueueMessages.NEW_GROUP_MEMBER};{newGroupMember.GroupId};{newGroupMember.ApplicationUserId}");
+
+                string message = $"{EventQueueMessages.NEW_GROUP_MEMBER};{newGroupMember.GroupId};{newGroupMember.ApplicationUserId}";
+                await _eventQueueService.SendMessageAsync(message);
+                var dictionay = new Dictionary<string, string>();
+                dictionay.Add("Queue Message", message);
+                _telemetryClient.TrackEvent("UserInteraction", dictionay);
+
             } catch (Exception e) {
                 _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
                 return Json(new { success = false });
             }
+
             return Json(new { success = true });
         }
 
@@ -159,6 +174,11 @@ namespace MyMeetUp.Web.Controllers
                 _logger.LogCritical($"EXCEPCIÓN: {e.Message}");
                 return Json(new { success = false });
             }
+
+            var dictionay = new Dictionary<string, string>();
+            dictionay.Add("Unregisted Group Member", $"userId: {userId}");
+            _telemetryClient.TrackEvent("UserInteraction", dictionay);
+
             return Json(new { success = true });
         }
 
@@ -216,7 +236,12 @@ namespace MyMeetUp.Web.Controllers
                 groupCategories.Append(";" + groupCategory);
             }
             string newGroupDetailsURI = HttpContext.Request.GetDisplayUrl().Replace("Create", $"Details/{newGroupId}");
-            await _eventQueueService.SendMessageAsync($"{EventQueueMessages.GROUP_CREATED};{newGroupId};{newGroupDetailsURI}{groupCategories.ToString()}");
+            string message = $"{EventQueueMessages.GROUP_CREATED};{newGroupId};{newGroupDetailsURI}{groupCategories.ToString()}";
+            await _eventQueueService.SendMessageAsync(message);
+
+            var dictionay = new Dictionary<string, string>();
+            dictionay.Add("Queue Message", message);
+            _telemetryClient.TrackEvent("UserInteraction", dictionay);
         }
 
         private async Task CreatesNewGroup(GroupCreateViewModel group) {
@@ -268,88 +293,5 @@ namespace MyMeetUp.Web.Controllers
 
             return View("Index", model);
         }
-
-        // GET: Groups/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var @group = await _context.Groups.FindAsync(id);
-        //    if (@group == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(@group);
-        //}
-
-        // POST: Groups/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Name,AboutUs,Country,City,CreationDate,FinalizationDate,Id")] Group @group)
-        //{
-        //    if (id != @group.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(@group);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!GroupExists(@group.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(@group);
-        //}
-
-        // GET: Groups/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var @group = await _context.Groups
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (@group == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(@group);
-        //}
-
-        // POST: Groups/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var @group = await _context.Groups.FindAsync(id);
-        //    _context.Groups.Remove(@group);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool GroupExists(int id)
-        //{
-        //    return _context.Groups.Any(e => e.Id == id);
-        //}
     }
 }

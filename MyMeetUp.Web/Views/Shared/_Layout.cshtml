@@ -1,4 +1,5 @@
-﻿@*Using necesario para tener disponobles las extensiones sobre IWebHostEnvironmet*@
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@*Using necesario para tener disponobles las extensiones sobre IWebHostEnvironmet*@
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostingEnvironment
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -20,6 +21,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="~/css/comments.css" rel="stylesheet" />
+    @Html.Raw(JavaScriptSnippet.FullScript)
 </head>
 <body>
     <header>
