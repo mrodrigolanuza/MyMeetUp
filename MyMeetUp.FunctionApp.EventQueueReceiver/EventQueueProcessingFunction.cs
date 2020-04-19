@@ -18,6 +18,9 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
         private readonly ApplicationDbContext _context;
         private List<string> eventArgs;
         private string eventType;
+        private ILogger _log;
+        private string SendGridMailAccount;
+        private string MockMailAccountTo;
         private const string COORDINATOR = "COORDINATOR";
         private const string MEMBER = "MEMBER";
 
@@ -39,16 +42,19 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
 
         public EventQueueProcessingFunction(ApplicationDbContext context) {
             _context = context;
+            SendGridMailAccount = Environment.GetEnvironmentVariable("SendGridMailAccount");
+            MockMailAccountTo = Environment.GetEnvironmentVariable("MockMailAccountTo"); 
         }
 
         [FunctionName("EventQueueProcessingFunction")]
         public void Run([QueueTrigger("mymeetupeventsqueue", Connection = "AzureWebJobsStorage")]string myQueueItem, ILogger log) {
+            _log = log;
             try {
                 AnalyzeEventReceived(myQueueItem);
                 PerformAssociatedEventActions();
-                LogEventAsProcessedOK(myQueueItem, log);
+                LogEventAsProcessedOK(myQueueItem);
             } catch (Exception ex) {
-                LogEventAsProcessedWithException(myQueueItem, log, ex);
+                LogEventAsProcessedWithException(myQueueItem, ex);
             }
         }
 
@@ -122,12 +128,13 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
 
                 var msg = new SendGridMessage()
                 {
-                    From = new EmailAddress("newsletter@mymeetup.com", "MyMeetUp Team"),
+                    From = new EmailAddress(SendGridMailAccount, "MyMeetUp Team"),
                     Subject = "MyMeetUp: Nuevo Grupo interesante!",
                     HtmlContent = NotificationEmailContent.ToString()
                 };
-                msg.AddTo(new EmailAddress("marcosrlanuza@hotmail.com"));
+                msg.AddTo(new EmailAddress(MockMailAccountTo));
                 var response = await client.SendEmailAsync(msg);
+                _log.LogWarning($"SendGrid response: {response.StatusCode}. Email sent to {user.Name} {user.Surname} related to new group created: {newGroup.Name}");
                 NotificationEmailContent.Clear();
             }
         }
@@ -178,12 +185,13 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
 
                 var msg = new SendGridMessage()
                 {
-                    From = new EmailAddress("newsletter@mymeetup.com", "MyMeetUp Team"),
+                    From = new EmailAddress(SendGridMailAccount, "MyMeetUp Team"),
                     Subject = "MyMeetUp: Atención Nuevo Evento!!",
                     HtmlContent = NotificationEmailContent.ToString()
                 };
-                msg.AddTo(new EmailAddress("marcosrlanuza@hotmail.com"));
+                msg.AddTo(new EmailAddress(MockMailAccountTo));
                 var response = await client.SendEmailAsync(msg);
+                _log.LogWarning($"SendGrid response: {response.StatusCode}. Email sent to {user.Name} {user.Surname} related to new event created: {newEvent.Title}");
                 NotificationEmailContent.Clear();
             }
         }
@@ -228,15 +236,17 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
 
                 var msg = new SendGridMessage()
                 {
-                    From = new EmailAddress("newsletter@mymeetup.com", "MyMeetUp Team"),
+                    From = new EmailAddress(SendGridMailAccount, "MyMeetUp Team"),
                     Subject = "MyMeetUp: Nuevo Miembro en tu Grupo!!",
                     HtmlContent = NotificationEmailContent.ToString()
                 };
-                msg.AddTo(new EmailAddress("marcosrlanuza@hotmail.com"));
+                msg.AddTo(new EmailAddress(MockMailAccountTo));
                 var response = await client.SendEmailAsync(msg);
+                _log.LogWarning($"SendGrid response: {response.StatusCode}. Email sent to {coordinator.Name} {coordinator.Surname} related to there is a new member in the group: {newMemberInfo.Name} {newMemberInfo.Surname}");
                 NotificationEmailContent.Clear();
             }
         }
+
 
         private SendGridClient GetSendGridClient() {
             string apiKey = Environment.GetEnvironmentVariable("MyMeetupSendgridApiKey");
@@ -244,12 +254,12 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
             return client;
         }
 
-        private void LogEventAsProcessedOK(string myQueueItem, ILogger log) {
-            log.LogInformation($"C# Queue trigger function processed: {myQueueItem} >>> Sending SendGridMail to marcosrlanuza@hotmail.com");
+        private void LogEventAsProcessedOK(string myQueueItem) {
+            _log.LogWarning($"C# Queue trigger function processed: {myQueueItem} >>> Sending SendGridMail to marcosrlanuza@hotmail.com");
         }
 
-        private void LogEventAsProcessedWithException(string myQueueItem, ILogger log, Exception ex) {
-            log.LogError($"EXCEPTION >> EventQueueProcessingFunction >> Queue message received: '{myQueueItem}' >>> Exception Message: {ex.Message}");
+        private void LogEventAsProcessedWithException(string myQueueItem, Exception ex) {
+            _log.LogError($"EXCEPTION >> EventQueueProcessingFunction >> Queue message received: '{myQueueItem}' >>> Exception Message: {ex.Message}");
         }
     }
 }
