@@ -19,6 +19,7 @@ namespace MyMeetUp.Web.Controllers
 {
     public class EventsController : Controller
     {
+        private const string WILL_ATTEND = "I WILL ATTEND";
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger _logger;
@@ -98,7 +99,7 @@ namespace MyMeetUp.Web.Controllers
         {
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             Event eventSelected = await _context.Events.FirstOrDefaultAsync(e => e.Id == eventId);
-            EventAttendanceState eventAttendaceState = await _context.EventAttendanceStates.Where(ea => ea.State == "I WILL ATTEND").FirstOrDefaultAsync();
+            EventAttendanceState eventAttendaceState = await _context.EventAttendanceStates.Where(ea => ea.State == WILL_ATTEND).FirstOrDefaultAsync();
             if ((user is null) || (eventSelected is null))
                 return Ok(new { success = false });
 

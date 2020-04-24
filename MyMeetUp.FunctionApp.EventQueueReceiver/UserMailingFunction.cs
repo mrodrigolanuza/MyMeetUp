@@ -20,6 +20,7 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
     public class UserMailingFunction
     {
         private const string Route = "usermailing";
+        private const string WILL_ATTEND = "I WILL ATTEND";
         private readonly ApplicationDbContext _context;
         private string emailAddressFrom;
         private string emailAddressTo; 
@@ -69,7 +70,7 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
                 List<ApplicationUser> membersSayWillAttendToEvent = _context.EventAttendances
                                                                         .Include(ea => ea.ApplicationUser)
                                                                         .Include(ea => ea.EventAttendanceState)
-                                                                        .Where(ea => ea.EventId == upcomingEvent.Id && ea.EventAttendanceState.State == "I WILL ATTEND")
+                                                                        .Where(ea => ea.EventId == upcomingEvent.Id && ea.EventAttendanceState.State == WILL_ATTEND)
                                                                         .Select(ea => ea.ApplicationUser)
                                                                         .ToList();
 

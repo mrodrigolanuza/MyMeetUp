@@ -143,7 +143,7 @@ namespace MyMeetUp.Web.Controllers
         public async Task<IActionResult> RegisterNewMember(string userId, int groupId) {
             try {
 
-                GroupMemberProfile memberProfile = await _context.GroupMemberProfiles.FirstOrDefaultAsync(gmp => gmp.Name == "MEMBER");
+                GroupMemberProfile memberProfile = await _context.GroupMemberProfiles.FirstOrDefaultAsync(gmp => gmp.Name == GroupMemberProfilesData.Member);
 
                 GroupMembers newGroupMember = new GroupMembers
                 {
