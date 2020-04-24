@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MyMeetUp.FunctionApp.EventQueueReceiver
 {
@@ -111,32 +112,37 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
                                             .Distinct()
                                             .ToList();
 
-            //Send personalized email to every single user with the new group info
+            //Send customized email to every single user with the new group info
             SendGridClient client = GetSendGridClient();
-            StringBuilder NotificationEmailContent = new StringBuilder();
             foreach (ApplicationUser user in similarGroupsUsers) {
-                NotificationEmailContent.Append($"Hola {user.Name}!");
-                NotificationEmailContent.Append("</br>");
-                NotificationEmailContent.Append("</br>");
-                NotificationEmailContent.Append("<p>Se acaba e crear un nuevo grupo afín a tus intereses, que creemos que te podría interesar.</br>");
-                NotificationEmailContent.Append($"Su nombre es <b>{newGroup.Name}</b> y su sede está en <b>{newGroup.City}</b>, <b>{newGroup.Country}</b>.</p>");
-                NotificationEmailContent.Append("<p>Sobre este grupo y sus intereses, podemos contarte lo siguiente:</p>");
-                NotificationEmailContent.Append($"<p><i>{newGroup.AboutUs}</i></p>");
-                NotificationEmailContent.Append($"<p>Si quieres unirte al grupo, pulsa el siguiente enlace: <a href=\"{groupDetailsUri}\" > Quiero saber más de: {newGroup.Name}</a></p>");
-                NotificationEmailContent.Append("<p>Un saludo,</br>");
-                NotificationEmailContent.Append("Equipo MyMeetUp</p>");
-
-                var msg = new SendGridMessage()
-                {
-                    From = new EmailAddress(SendGridMailAccount, "MyMeetUp Team"),
-                    Subject = "MyMeetUp: Nuevo Grupo interesante!",
-                    HtmlContent = NotificationEmailContent.ToString()
-                };
-                msg.AddTo(new EmailAddress(MockMailAccountTo));
-                var response = await client.SendEmailAsync(msg);
-                _log.LogWarning($"SendGrid response: {response.StatusCode}. Email sent to {user.Name} {user.Surname} related to new group created: {newGroup.Name}");
-                NotificationEmailContent.Clear();
+                await SendCustomizedNewGroupEmailToUser(groupDetailsUri, newGroup, client, user);
             }
+            _log.LogWarning($"Users notified: {similarGroupsUsers.Count}");
+        }
+
+        private async Task SendCustomizedNewGroupEmailToUser(string groupDetailsUri, Group newGroup, SendGridClient client, ApplicationUser user) {
+            StringBuilder NotificationEmailContent = new StringBuilder();
+            NotificationEmailContent.Append($"Hola {user.Name}!");
+            NotificationEmailContent.Append("</br>");
+            NotificationEmailContent.Append("</br>");
+            NotificationEmailContent.Append("<p>Se acaba e crear un nuevo grupo afín a tus intereses, que creemos que te podría interesar.</br>");
+            NotificationEmailContent.Append($"Su nombre es <b>{newGroup.Name}</b> y su sede está en <b>{newGroup.City}</b>, <b>{newGroup.Country}</b>.</p>");
+            NotificationEmailContent.Append("<p>Sobre este grupo y sus intereses, podemos contarte lo siguiente:</p>");
+            NotificationEmailContent.Append($"<p><i>{newGroup.AboutUs}</i></p>");
+            NotificationEmailContent.Append($"<p>Si quieres unirte al grupo, pulsa el siguiente enlace: <a href=\"{groupDetailsUri}\" > Quiero saber más de: {newGroup.Name}</a></p>");
+            NotificationEmailContent.Append("<p>Un saludo,</br>");
+            NotificationEmailContent.Append("Equipo MyMeetUp</p>");
+
+            var msg = new SendGridMessage()
+            {
+                From = new EmailAddress(SendGridMailAccount, "MyMeetUp Team"),
+                Subject = "MyMeetUp: Nuevo Grupo interesante!",
+                HtmlContent = NotificationEmailContent.ToString()
+            };
+            msg.AddTo(new EmailAddress(MockMailAccountTo));
+            var response = await client.SendEmailAsync(msg);
+            _log.LogWarning($"SendGrid response: {response.StatusCode}. Email sent to {user.Name} {user.Surname} related to new group created: {newGroup.Name}");
+            NotificationEmailContent.Clear();
         }
 
         private async void PerformEventCreationAssociatedActions() {
@@ -165,35 +171,40 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
 
             //Send personalized email to every single user with the new group info
             SendGridClient client = GetSendGridClient();
-            StringBuilder NotificationEmailContent = new StringBuilder();
             foreach (ApplicationUser user in groupMembers) {
-                NotificationEmailContent.Append($"Hola {user.Name}!");
-                NotificationEmailContent.Append("</br>");
-                NotificationEmailContent.Append("</br>");
-                NotificationEmailContent.Append("<p>Desde el equipo de MyMeetUp queremos comunicarte que estás de enhorabuena!</br>");
-                NotificationEmailContent.Append($"Acaba de crearse recientemente un nuevo evento organizado por el grupo <b>{group.Name}</b>.</p>");
-                NotificationEmailContent.Append("<p>Esto son los datos del evento:");
-                NotificationEmailContent.Append("<ul>");
-                NotificationEmailContent.Append($"<li>Título: <b><i>{newEvent.Title}</i></b></li>");
-                NotificationEmailContent.Append($"<li>Dónde: <i>{newEvent.Address} - {newEvent.City} - {newEvent.Country}</i></li>");
-                NotificationEmailContent.Append($"<li>Cuándo: <i>{newEvent.FechaHora}</i></li>");
-                NotificationEmailContent.Append("</ul></p>");
-                NotificationEmailContent.Append($"<p><u>Descripción</u><br><i>{newEvent.Description}</i></li></p>");
-                NotificationEmailContent.Append($"<p>Si quieres acceder al evento directamente, puedes utilizar el siguiente enlace: <a href=\"{eventDetailsUri}\" > Quiero saber más sobre este evento!</a></p>");
-                NotificationEmailContent.Append("<p>Un saludo,</br>");
-                NotificationEmailContent.Append("Equipo MyMeetUp</p>");
-
-                var msg = new SendGridMessage()
-                {
-                    From = new EmailAddress(SendGridMailAccount, "MyMeetUp Team"),
-                    Subject = "MyMeetUp: Atención Nuevo Evento!!",
-                    HtmlContent = NotificationEmailContent.ToString()
-                };
-                msg.AddTo(new EmailAddress(MockMailAccountTo));
-                var response = await client.SendEmailAsync(msg);
-                _log.LogWarning($"SendGrid response: {response.StatusCode}. Email sent to {user.Name} {user.Surname} related to new event created: {newEvent.Title}");
-                NotificationEmailContent.Clear();
+                await SendCustomizedNewEventEmailToGroupMembers(eventDetailsUri, newEvent, group, client, user);
             }
+            _log.LogWarning($"Users notified: {groupMembers.Count}");
+        }
+
+        private async Task SendCustomizedNewEventEmailToGroupMembers(string eventDetailsUri, Event newEvent, Group group, SendGridClient client, ApplicationUser user) {
+            StringBuilder NotificationEmailContent = new StringBuilder();
+            NotificationEmailContent.Append($"Hola {user.Name}!");
+            NotificationEmailContent.Append("</br>");
+            NotificationEmailContent.Append("</br>");
+            NotificationEmailContent.Append("<p>Desde el equipo de MyMeetUp queremos comunicarte que estás de enhorabuena!</br>");
+            NotificationEmailContent.Append($"Acaba de crearse recientemente un nuevo evento organizado por el grupo <b>{group.Name}</b>.</p>");
+            NotificationEmailContent.Append("<p>Esto son los datos del evento:");
+            NotificationEmailContent.Append("<ul>");
+            NotificationEmailContent.Append($"<li>Título: <b><i>{newEvent.Title}</i></b></li>");
+            NotificationEmailContent.Append($"<li>Dónde: <i>{newEvent.Address} - {newEvent.City} - {newEvent.Country}</i></li>");
+            NotificationEmailContent.Append($"<li>Cuándo: <i>{newEvent.FechaHora}</i></li>");
+            NotificationEmailContent.Append("</ul></p>");
+            NotificationEmailContent.Append($"<p><u>Descripción</u><br><i>{newEvent.Description}</i></li></p>");
+            NotificationEmailContent.Append($"<p>Si quieres acceder al evento directamente, puedes utilizar el siguiente enlace: <a href=\"{eventDetailsUri}\" > Quiero saber más sobre este evento!</a></p>");
+            NotificationEmailContent.Append("<p>Un saludo,</br>");
+            NotificationEmailContent.Append("Equipo MyMeetUp</p>");
+
+            var msg = new SendGridMessage()
+            {
+                From = new EmailAddress(SendGridMailAccount, "MyMeetUp Team"),
+                Subject = "MyMeetUp: Atención Nuevo Evento!!",
+                HtmlContent = NotificationEmailContent.ToString()
+            };
+            msg.AddTo(new EmailAddress(MockMailAccountTo));
+            var response = await client.SendEmailAsync(msg);
+            _log.LogWarning($"SendGrid response: {response.StatusCode}. Email sent to {user.Name} {user.Surname} related to new event created: {newEvent.Title}");
+            NotificationEmailContent.Clear();
         }
 
         private async void PerformNewGroupMemberAssociatedActions() {
@@ -219,34 +230,38 @@ namespace MyMeetUp.FunctionApp.EventQueueReceiver
                                                     .FirstOrDefault();
             //Send email to group coordinators
             SendGridClient client = GetSendGridClient();
-            StringBuilder NotificationEmailContent = new StringBuilder();
             foreach (ApplicationUser coordinator in groupCoordinators) {
-                NotificationEmailContent.Append($"Hola {coordinator.Name},");
-                NotificationEmailContent.Append("</br>");
-                NotificationEmailContent.Append("</br>");
-                NotificationEmailContent.Append($"<p>Desde el equipo de MyMeetUp queremos informarle como coordinador de grupo <b>{group.Name}</b>,</br>");
-                NotificationEmailContent.Append($"que acaba de darse de alta un nuevo miembro. Enhorabuena!.</p>");
-                NotificationEmailContent.Append("<p><ul>");
-                NotificationEmailContent.Append($"<li><b><i>{newMemberInfo.Name} {newMemberInfo.Surname}</i></b></li>");
-                NotificationEmailContent.Append($"<li><i>{newMemberInfo.Email}</i></li>");
-                NotificationEmailContent.Append($"<li><i>{newMemberInfo.City} - {newMemberInfo.Country}</i></li>");
-                NotificationEmailContent.Append("</ul></p>");
-                NotificationEmailContent.Append("<p>Un saludo,</br>");
-                NotificationEmailContent.Append("Equipo MyMeetUp</p>");
-
-                var msg = new SendGridMessage()
-                {
-                    From = new EmailAddress(SendGridMailAccount, "MyMeetUp Team"),
-                    Subject = "MyMeetUp: Nuevo Miembro en tu Grupo!!",
-                    HtmlContent = NotificationEmailContent.ToString()
-                };
-                msg.AddTo(new EmailAddress(MockMailAccountTo));
-                var response = await client.SendEmailAsync(msg);
-                _log.LogWarning($"SendGrid response: {response.StatusCode}. Email sent to {coordinator.Name} {coordinator.Surname} related to there is a new member in the group: {newMemberInfo.Name} {newMemberInfo.Surname}");
-                NotificationEmailContent.Clear();
+                await SendCustomizedNewGroupMemberToCoordinatorStaff(group, newMemberInfo, client, coordinator);
             }
+            _log.LogWarning($"Coordinators notified: {groupCoordinators.Count}");
         }
 
+        private async Task SendCustomizedNewGroupMemberToCoordinatorStaff(Group group, ApplicationUser newMemberInfo, SendGridClient client, ApplicationUser coordinator) {
+            StringBuilder NotificationEmailContent = new StringBuilder();
+            NotificationEmailContent.Append($"Hola {coordinator.Name},");
+            NotificationEmailContent.Append("</br>");
+            NotificationEmailContent.Append("</br>");
+            NotificationEmailContent.Append($"<p>Desde el equipo de MyMeetUp queremos informarle como coordinador de grupo <b>{group.Name}</b>,</br>");
+            NotificationEmailContent.Append($"que acaba de darse de alta un nuevo miembro. Enhorabuena!.</p>");
+            NotificationEmailContent.Append("<p><ul>");
+            NotificationEmailContent.Append($"<li><b><i>{newMemberInfo.Name} {newMemberInfo.Surname}</i></b></li>");
+            NotificationEmailContent.Append($"<li><i>{newMemberInfo.Email}</i></li>");
+            NotificationEmailContent.Append($"<li><i>{newMemberInfo.City} - {newMemberInfo.Country}</i></li>");
+            NotificationEmailContent.Append("</ul></p>");
+            NotificationEmailContent.Append("<p>Un saludo,</br>");
+            NotificationEmailContent.Append("Equipo MyMeetUp</p>");
+
+            var msg = new SendGridMessage()
+            {
+                From = new EmailAddress(SendGridMailAccount, "MyMeetUp Team"),
+                Subject = "MyMeetUp: Nuevo Miembro en tu Grupo!!",
+                HtmlContent = NotificationEmailContent.ToString()
+            };
+            msg.AddTo(new EmailAddress(MockMailAccountTo));
+            var response = await client.SendEmailAsync(msg);
+            _log.LogWarning($"SendGrid response: {response.StatusCode}. Email sent to {coordinator.Name} {coordinator.Surname} related to there is a new member in the group: {newMemberInfo.Name} {newMemberInfo.Surname}");
+            NotificationEmailContent.Clear();
+        }
 
         private SendGridClient GetSendGridClient() {
             string apiKey = Environment.GetEnvironmentVariable("MyMeetupSendgridApiKey");
