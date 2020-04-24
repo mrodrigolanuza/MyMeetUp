@@ -36,6 +36,7 @@ namespace MyMeetUp.Web
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyMeetUpDb_Dev")));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings_Dev"));
             services.Configure<EventQueueSettings>(Configuration.GetSection("EventQueue"));
+            services.Configure<BlobStorageSettings>(Configuration.GetSection("BlobStorage"));
             ConfigureScopedServices(services);
             ConfigureServices(services);
         }
@@ -51,6 +52,7 @@ namespace MyMeetUp.Web
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyMeetUpDb_Prd")));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings_Prd"));
             services.Configure<EventQueueSettings>(Configuration.GetSection("EventQueue"));
+            services.Configure<BlobStorageSettings>(Configuration.GetSection("BlobStorage"));
             ConfigureScopedServices(services);
             ConfigureServices(services);
         }
@@ -107,6 +109,7 @@ namespace MyMeetUp.Web
         private void ConfigureScopedServices(IServiceCollection services) {
             // Dependency Injection
             services.AddScoped<IQueueService, AzureStorageQueueService>();
+            services.AddScoped<IAzureBlobManager, AzureBlobManager>();
             services.AddApplicationInsightsTelemetry();
         }
     }

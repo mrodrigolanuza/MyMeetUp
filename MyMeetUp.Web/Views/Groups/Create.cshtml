@@ -14,7 +14,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <form asp-controller="Groups" asp-action="Create" asp-antiforgery="true" method="post" class="form-horizontal">
+            <form asp-controller="Groups" asp-action="Create" asp-antiforgery="true" method="post" class="form-horizontal" enctype="multipart/form-data">
                 <div class="card">
                     <div class="card-header"></div>
                     <div class="card-body">
@@ -52,9 +52,15 @@
                                 <select asp-for="GroupCategoriesSelected" asp-items="Model.GroupCategoriesList" class="form-control"></select>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-info float-right"> Crear Grupo</button>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="file-input"><strong>Imagén Grupo</strong></label>
+                            <div class="col-md-9">
+                                <input asp-for="GroupImage" type="file">
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-info float-right"> Crear Grupo</button>
+                        </div>
                     </div>
                 </div>
             </form>

@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace MyMeetUp.Web.Controllers
 {
@@ -25,6 +26,7 @@ namespace MyMeetUp.Web.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IQueueService _eventQueueService;
+        private readonly IAzureBlobManager _azureBlobManager;
         private readonly IWebHostEnvironment _hostingEnvirontment;
         private TelemetryClient _telemetryClient;
 
@@ -33,6 +35,7 @@ namespace MyMeetUp.Web.Controllers
                                 UserManager<ApplicationUser> userManager, 
                                 ILogger<GroupsController> logger,
                                 IQueueService eventQueueService,
+                                IAzureBlobManager azureBlobManager,
                                 IWebHostEnvironment environment,
                                 TelemetryClient telemetry) {
             _context = context;
@@ -40,6 +43,7 @@ namespace MyMeetUp.Web.Controllers
             _userManager = userManager;
             _logger = logger;
             _eventQueueService = eventQueueService;
+            _azureBlobManager = azureBlobManager;
             _hostingEnvirontment = environment;
             _telemetryClient = telemetry;
         }
@@ -110,14 +114,19 @@ namespace MyMeetUp.Web.Controllers
             }
 
             var groupEventsSelected = await _context.Events.Where(e => e.GroupId == groupSelected.Id).OrderByDescending(e => e.FechaHora).ToListAsync();
-            _logger.LogInformation($"Groups/Details: Id grupo = {id} encontrado.. OK");
+            _logger.LogInformation($"Groups/Details: Id grupo = {id} Eventos: {groupEventsSelected.Count}");
 
             int numGroupMembers = _context.GroupMembers.Where(gm => gm.GroupId == groupSelected.Id).Count();
-            _logger.LogInformation($"Groups/Details: Id grupo = {id} encontrado.. OK");
+            _logger.LogInformation($"Groups/Details: Id grupo = {id} Miembros: {numGroupMembers}");
+
+            List<IListBlobItem> blobList = await _azureBlobManager.ListBlobsHierarchicalListingAsync(id + "/groupimage/");
+            string urlBlobGroupImage = blobList.Count > 0 ? blobList[0].StorageUri.PrimaryUri.ToString() : "";
+            _logger.LogInformation($"Groups/Details: Id grupo = {id} Blob URL: {urlBlobGroupImage}");
 
             var groupDetailsViewModel = new GroupDetailsViewModel
             {
                 GroupInfo = groupSelected,
+                GroupProfileImagePath = urlBlobGroupImage,
                 GroupEvents = groupEventsSelected,
                 MembersTotalNumber = numGroupMembers
             };
@@ -216,9 +225,11 @@ namespace MyMeetUp.Web.Controllers
 
                     await _context.SaveChangesAsync();
                     dbContextTransaction.Commit();
-                    
+
+                    await _azureBlobManager.UploadFile(group.GroupImage, newGroupId + "/groupimage/");
+
                     await SendNewGroupMessageToEventQueue(newGroupId, group);
-                    
+
                     return RedirectToAction("Index", "Groups", new { userId = userSignedIn });
 
                 } catch (Exception e) {

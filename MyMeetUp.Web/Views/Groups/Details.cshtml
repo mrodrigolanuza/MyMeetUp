@@ -12,7 +12,12 @@
     <!--Imagen e información del grupo-->
     <div class="row align-items-center justify-content-around">
         <div class="col-8">
-            <img src="~/img/LandPage/Groups/GenericGroup.jpg" class="img-fluid img-thumbnail rounded-pill" />
+            @if (string.IsNullOrEmpty(Model.GroupProfileImagePath)) {
+                <img src="~/img/LandPage/Groups/GenericGroup.jpg" class="img-fluid img-thumbnail rounded-pill" />
+            }
+            else {
+                <img src="@Model.GroupProfileImagePath" alt="Sin imágen.." class="img-fluid img-thumbnail rounded-pill" />
+            }
         </div>
         <div class="col-4 shadow p-3 mb-5 bg-white rounded">
             <div class="row">
