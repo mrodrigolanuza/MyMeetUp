@@ -1,0 +1,14 @@
+﻿@model MyMeetUp.Web.ViewModels.GroupIndexViewModel
+@{
+    ViewData["Title"] = "Listado de Grupos";
+}
+
+@if (Model.ByCategory != null && Model.ByCategory != "") {
+    @await Html.PartialAsync("~/Views/Groups/_ExploringGroupsByCategory.cshtml", Model)
+}
+else if (Model.UserId == null || Model.UserId == "") {
+    @await Html.PartialAsync("~/Views/Groups/_ExploringGroups.cshtml", Model)
+}
+else {
+    @await Html.PartialAsync("~/Views/Groups/_UserGroups.cshtml", Model)
+}

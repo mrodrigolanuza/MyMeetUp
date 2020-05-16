@@ -1,0 +1,35 @@
+﻿@model IEnumerable<MyMeetUp.Web.Models.EventAttendanceState>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Listado de Estados Asistencia a un Evento</h1>
+
+<p>
+    <a asp-action="Create">Nuevo Estado</a>
+</p>
+<table class="table datatable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Borrar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

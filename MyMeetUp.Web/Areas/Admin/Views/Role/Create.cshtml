@@ -1,0 +1,19 @@
+﻿@using MyMeetUp.Web.Areas.Admin.ViewModels
+@model RoleCreateViewModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1 class="bg-dark text-white">Nuevo Rol</h1>
+
+<form asp-area="Admin" asp-controller="Role" asp-action="Create" method="post">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <input asp-for="Name" class="form-control" placeholder="Escriba nombre nuevo rol..">
+        </div>
+
+        <div class="form-group col-md-2">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </div>
+</form>

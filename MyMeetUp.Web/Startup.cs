@@ -1,0 +1,116 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
+using MyMeetUp.Web.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using MyMeetUp.Web.Configuration;
+using MyMeetUp.Web.Models;
+using Microsoft.AspNetCore.Http;
+using MyMeetUp.Web.Filters;
+using MyMeetUp.Web.Services.Interfaces;
+using MyMeetUp.Web.Services;
+
+namespace MyMeetUp.Web
+{
+    public class Startup
+    {
+        private readonly string _applicationName = "MyMeetUp";
+        public Startup(IConfiguration configuration) {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+
+        //Development Configuration /////////////////////////////////////////////////////////////////
+        public void ConfigureDevelopmentServices(IServiceCollection services) {
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyMeetUpDb_Dev")));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings_Dev"));
+            services.Configure<EventQueueSettings>(Configuration.GetSection("EventQueue"));
+            services.Configure<BlobStorageSettings>(Configuration.GetSection("BlobStorage"));
+            ConfigureScopedServices(services);
+            ConfigureServices(services);
+        }
+        public void ConfigureDevelopment(IApplicationBuilder app, IWebHostEnvironment env) {
+            env.ApplicationName = $"{_applicationName} [Dev]";
+            app.UseDeveloperExceptionPage();
+            app.UseDatabaseErrorPage();
+            Configure(app, env);
+        }
+        
+        //Production Configuration /////////////////////////////////////////////////////////////////
+        public void ConfigureProductionServices(IServiceCollection services) {
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyMeetUpDb_Prd")));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings_Prd"));
+            services.Configure<EventQueueSettings>(Configuration.GetSection("EventQueue"));
+            services.Configure<BlobStorageSettings>(Configuration.GetSection("BlobStorage"));
+            ConfigureScopedServices(services);
+            ConfigureServices(services);
+        }
+        public void ConfigureProduction(IApplicationBuilder app, IWebHostEnvironment env) {
+            env.ApplicationName = $"{_applicationName}";
+            app.UseExceptionHandler("/Home/Error");
+            app.UseHsts();      // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            Configure(app, env);
+        }
+
+        //Services /////////////////////////////////////////////////////////////////////////////////
+        public void ConfigureServices(IServiceCollection services) {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                //Función lambda que determina si es necesario el consentimiento del usuario para cookies no necesarias. 
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+            services.AddDefaultIdentity<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddControllersWithViews(config => {
+                config.Filters.Add(typeof(DebugExceptionFilter));   //Global application filter for catching exceptions and logging them into the console.
+            });
+            services.AddRazorPages();
+            services.AddHealthChecks();
+        }
+
+        //HTTP request pipeline configuration //////////////////////////////////////////////////////
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseCookiePolicy();
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/healthz");
+
+                endpoints.MapControllerRoute(
+                    name: "defaultAreas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                
+                endpoints.MapRazorPages();
+            });
+        }
+
+        private void ConfigureScopedServices(IServiceCollection services) {
+            // Dependency Injection
+            services.AddScoped<IQueueService, AzureStorageQueueService>();
+            services.AddScoped<IAzureBlobManager, AzureBlobManager>();
+            services.AddApplicationInsightsTelemetry();
+        }
+    }
+}

@@ -1,0 +1,37 @@
+﻿@model List<EventComment>
+
+
+@if (Model != null && Model.Any()) {
+    <div class="comments-container">
+        <ul id="comments-list" class="comments-list">
+            @foreach (EventComment comment in Model) {
+                <li>
+                    <div class="comment-main-level">
+                        <div class="comment-avatar">
+                            <img src="~/img/usuario.png" alt="~/img/usuario.png">
+                        </div>
+                        <div class="comment-box">
+                            <div class="comment-head">
+                                <h6 class="comment-name"><a href="#">@($"{comment.ApplicationUser.Name} {comment.ApplicationUser.Surname}")</a></h6>
+                                <span>@comment.PublicationDate.ToString("dd/MM/yyyy hh:mm:ss")</span>
+                            </div>
+                            <div class="comment-content">
+                                @($"{comment.Text}")
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+}
+else {
+    <div class="row mt-2">
+        <div class="col">
+            <div class="card">
+                <div class="card-header"><span class="badge badge-warning float-right">Sin comentarios!</span></div>
+                <div class="card-body">Sé el primero en comentar..</div>
+            </div>
+        </div>
+    </div>
+}

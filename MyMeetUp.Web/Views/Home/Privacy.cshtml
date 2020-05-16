@@ -1,0 +1,106 @@
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostingEnvironment
+@{
+    ViewData["Title"] = "Política de privacidad";
+
+    var title = ViewData["Title"];
+    var mailSupport = ViewBag.EmailSupport;
+    var applicationName = hostingEnvironment.ApplicationName;
+
+}
+<h1>@title</h1>
+
+<p>
+    En este documento de privacidad se explican detalladamente las prácticas de @applicationName en relación con la obtención, utilización y revelación de determinada información, incluida la información privada o personal, por parte del sitio web @applicationName.
+</p>
+<p>
+    @applicationName se reserva el derecho a modificar las políticas de privacidad en cualquier momento y sin previo aviso, por lo que recomendamos al usuario que lea periódicamente dichas políticas.
+</p>
+<p>
+    Para cualquier duda o consulta sobre las políticas de privacidad y/o otras dudas de carácter legal, por favor, visita nuestra página de aviso legal o contacta con nosotros a través del correo <a href="mailto:@mailSupport?subject=@title">@mailSupport</a>.
+</p>
+<p>
+    <strong>¿Qué son las cookies?</strong>
+</p>
+<p>
+    Una cookie (o galleta informática) es una pequeña información enviada por un sitio web y almacenada en el navegador del usuario, de manera que el sitio web puede consultar la actividad previa del usuario.
+</p>
+<p>
+    <strong>¿Qué cookies utiliza @applicationName y con qué finalidad?</strong>
+</p>
+<p>
+    @applicationName web utiliza las cookies necesarias para la prestación de algún servicio, como para el seguimiento y análisis estadístico del comportamiento del sitio web o de los Usuarios. El Usuario podrá impedir la generación de cookies mediante la selección de la correspondiente opción en su navegador.
+</p>
+<p>
+    @applicationName incluye algunos servicios inmersos o embebidos en su web, que pueden interactuar directamente con el usuario, y a su vez pueden utilizar cookies, web beacons u otros sistemas similares para el registro de información del usuario. Si se está interesado, se recomienda revisar sus políticas de privacidad. Usted siempre podrá bloquear cualquiera de estos servicios para proteger su privacidad con el uso de un firewall o un programa similar. Estos servicios son los siguientes:
+</p>
+<p>
+    <ul>
+        <li>
+            <strong>Google Analytics:</strong> Servicio contador de visitas de Google.
+        </li>
+        <li>
+            <strong>FeedBurner:</strong> Servicio de contabilización de accesos RSS/XML de Google.
+        </li>
+        <li>
+            <strong>Twitter:</strong> Servicio de widgets sociales de la red de Twitter.
+        </li>
+        <li>
+            <strong>Facebook:</strong> Servicio de widgets sociales de la red de Facebook.
+        </li>
+        <li>
+            <strong>Google+:</strong> Servicio de widgets sociales de la red de Google Plus.
+        </li>
+        <li>
+            <strong>MailChimp:</strong> Servicio de suscripción por correo electrónico de Mail Chimp.
+        </li>
+    </ul>
+</p>
+<p>
+    Además de las citadas anteriormente, @applicationName utiliza cookies en los formularios de comentarios del sitio web, así como en la navegación por parte de los usuarios. Estas cookies guardan la información suministrada por el usuario (tales como nombre, email y/o página web e idioma del navegador). La finalidad de estas cookies es que usted, por comodidad, no tenga que escribir estos datos cada vez que desee dejar un comentario, así como que la web se muestre, por defecto, en su idioma.
+</p>
+<p>
+    <strong>¿Cómo desactivar o eliminar estas cookies?</strong>
+</p>
+<p>
+    Usted es libre de bloquear en su navegador las cookies para @applicationName si lo desea (renunciando a algunas características como el recordatorio de estos datos en los comentarios) o usar periódicamente un programa para eliminar cookies.
+</p>
+<p>
+    También puede usted permitir, bloquear o eliminar las cookies instaladas en su equipo mediante la configuración de las opciones del navegador instalado en su ordenador.
+</p>
+<p>
+    <ul>
+        <li>
+            <strong>Firefox:</strong><a href="http://support.mozilla.org/es/kb/habilitar-y-deshabilitar-cookies-que-los-sitios-we" target="_blank">   http://support.mozilla.org/es/kb/habilitar-y-deshabilitar-cookies-que-los-sitios-we</a>
+        </li>
+        <li>
+            <strong>Chrome:</strong><a href="http://support.google.com/chrome/bin/answer.py?hl=es&answer=95647" target="_blank">   http://support.google.com/chrome/bin/answer.py?hl=es&answer=95647</a>
+        </li>
+        <li>
+            <strong>Explorer:</strong><a href="http://windows.microsoft.com/es-es/windows7/how-to-manage-cookies-in-internet-explorer-9" target="_blank">   http://windows.microsoft.com/es-es/windows7/how-to-manage-cookies-in-internet-explorer-9</a>
+        </li>
+        <li>
+            <strong>Safari:</strong><a href="http://support.apple.com/kb/ph5042" target="_blank">   http://support.apple.com/kb/ph5042</a>
+        </li>
+        <li>
+            <strong>Opera:</strong><a href="http://help.opera.com/Windows/11.50/es-ES/cookies.html" target="_blank">   http://help.opera.com/Windows/11.50/es-ES/cookies.html</a>
+        </li>
+        <li>
+            <strong> Otros navegadores:</strong> consulte la documentación del navegador que tenga instalado.
+        </li>
+    </ul>
+</p>
+<p>
+    Si desea rechazar las cookies analíticas de Google Analytics en todos los navegadores, de forma que no se envíe información suya a Google Analitys, puede descargar un complemento que realiza esta función desde este enlace: <a href="https://tools.google.com/dlpage/gaoptout." target="_blank">https://tools.google.com/dlpage/gaoptout.</a>
+</p>
+<p>
+    <strong>Políticas de privacidad</strong>
+</p>
+<p>
+    En @applicationName se publican comentarios realizados por usuarios externos al sitio web. Dichos comentarios son opiniones ajenas a @applicationName y no nos responsabilizamos de los mismos, aunque intentamos moderar y eliminar aquellos que consideremos vejatorios o malintencionados. Si usted tiene alguna queja referente a un comentario publicado en esta página web, por favor contacte con nosotros a través del correo <a href="mailto:@mailSupport?subject=@title">@mailSupport</a> y revisaremos su petición para solucionarla lo antes posible.
+</p>
+<p>
+    Los datos que el usuario introduce al realizar un comentario en @applicationName, así como el comentario en sí, son almacenados en una base de datos privada con el único fin de mostrarlos asociados al artículo en los que fueron añadidos. Los datos de IP y dirección de email nunca serán mostrados al público y se almacenan solo como medida de seguridad en caso de que la soliciten las autoridades competentes. Los demás datos recogidos son de carácter público (nick de usuario, página web, opinión).
+</p>
+
+
+

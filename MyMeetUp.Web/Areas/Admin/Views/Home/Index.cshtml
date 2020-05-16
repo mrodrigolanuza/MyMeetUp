@@ -1,0 +1,96 @@
+﻿@{
+    ViewData["Title"] = "Area Administración";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Área Administración</li>
+    </ol>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="card-deck">
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">GRUPOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de grupos</h5>
+                    <p class="card-text">Configuración de todas las funcionalidades relacionadas con la entidad de Grupo</p>
+                    <a asp-area="Admin" asp-controller="Groups" asp-action="Index" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">CATEGORÍAS DE GRUPOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de categorías de grupo</h5>
+                    <p class="card-text">Crear, eliminar y actualizar las diferentes categorías de grupos existentes</p>
+                    <a asp-area="Admin" asp-controller="GroupCategories" asp-action="Index" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">PERFILES DE MIEMBROS EN UN GRUPO</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de perfiles de miembros de grupo</h5>
+                    <p class="card-text">Crear, eliminar y actualizar las diferentes perfiles que puede tener un miembro de un grupo</p>
+                    <a asp-area="Admin" asp-controller="GroupMemberProfiles" asp-action="Index" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card-deck">
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">EVENTOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de eventos</h5>
+                    <p class="card-text">Configuración de todas las funcionalidades relacionadas con la entidad de Evento</p>
+                    <a asp-area="Admin" asp-controller="Events" asp-action="Index" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">CATEGORÍAS DE EVENTOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de categorías de evento</h5>
+                    <p class="card-text">Crear, eliminar y actualizar las diferentes categorías de eventos existentes</p>
+                    <a asp-area="Admin" asp-controller="EventCategories" asp-action="Index" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">ESTADOS ASISTENCIA EVENTOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de estados de asistencias a eventos</h5>
+                    <p class="card-text">Crear, eliminar y actualizar las estados de asistencia de un miembro en un grupo</p>
+                    <a asp-area="Admin" asp-controller="EventAttendanceStates" asp-action="Index" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">COMENTARIOS DE EVENTOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de los comentarios de evento</h5>
+                    <p class="card-text">Crear, eliminar y actualizar los diferentes comentarios asociados a un envento</p>
+                    <a asp-area="Admin" asp-controller="EventComments" asp-action="Index" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card-deck">
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">USUARIOS</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de usuarios registrados</h5>
+                    <p class="card-text">Crear, eliminar y actualizar los diferentes usuarios registrados en el sistema</p>
+                    <a asp-area="Admin" asp-controller="ApplicationUsers" asp-action="Index" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-header">ROLES</div>
+                <div class="card-body">
+                    <h5 class="card-title">Administración de los roles de la aplicación</h5>
+                    <p class="card-text">Crear, eliminar y actualizar los diferentes roles que participan en la aplicación</p>
+                    <a asp-area="Admin" asp-controller="Role" asp-action="Index" class="btn btn-primary">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

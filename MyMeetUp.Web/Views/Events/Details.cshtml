@@ -1,0 +1,122 @@
+﻿@model MyMeetUp.Web.ViewModels.EventDetailsViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Información del Evento";
+    var userSignedIn = await UserManager.GetUserAsync(User);
+    var userId = userSignedIn?.Id;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <div style="height: 45px">
+                        <span><b>@Model.EventInfo.FechaHora.ToString("dddd dd MMM yyyy")</b></span>
+                        @if (Model.EventInfo.FechaHora < DateTime.Today) {
+                            <span class="badge badge-warning float-right">Evento Finalizado</span>
+                        }
+                        else if (SignInManager.IsSignedIn(User)) {
+                            @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__EventAttendanceAntiForgeryToken" })) {
+                                @Html.AntiForgeryToken()
+
+                                @if (Model.SignedInUserWillAttend) {
+                                    <a href="#" class="btn btn-danger float-right" onclick="ManageUserEventAttendance()" id="register-event-button">Liberar Mi Plaza!</a>
+                                }
+                                else {
+                                    <a href="#" class="btn btn-info float-right" onclick="ManageUserEventAttendance()" id="register-event-button">Quiero Asistir!</a>
+                                }
+                                <input type="hidden" id="userId" value="@userId" />
+                                <input type="hidden" id="eventId" value="@Model.EventInfo.Id" />
+                            }
+                        }
+                    </div>
+                    <div class="mt-4 mb-2 shadow p-3 bg-white rounded">
+                        <h2><span><i class="fa fa-calendar-check-o"></i></span> @Model.EventInfo.Title</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="shadow p-3 bg-white rounded">
+                        <p class="card-text">@Model.EventInfo.Description</p>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col">
+                            <div class="shadow p-3 bg-white rounded">
+                                <a asp-controller="Groups" asp-action="Details" asp-route-id="@Model.EventInfo.GroupId" class="stretched-link"><h5><span><i class="fa fa-group"></i>  @Model.EventInfo.Group.Name</span></h5></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-1 row">
+                        <div class="col">
+                            <div class="shadow p-3 bg-white rounded">
+                                <p><span><i class="fa fa-clock-o"></i>  @Model.EventInfo.FechaHora.ToString("dd/MM/yyyy hh:mm")</span></p>
+                                <p><span><i class="fa fa-map-marker"></i>  @Model.EventInfo.Address</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="mt-4 mb-2 shadow p-3 bg-white rounded">
+                <h2><span><i class="fa fa-check-circle"></i></span> Asistentes</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col" id="attendees-to-event">
+            @await Html.PartialAsync("~/Views/Events/_AttendeesToEvent.cshtml", Model.EventAttendees)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="mt-4 mb-2 shadow p-3 bg-white rounded">
+                <h2><span><i class="fa fa-comments"></i></span> Comentarios</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col" id="event-comments">
+            @await Html.PartialAsync("~/Views/Events/_EventComments.cshtml", Model.EventComments)
+        </div>
+    </div>
+    @if (SignInManager.IsSignedIn(User)) {
+        <div class="row">
+            <div class="col">
+                <div class="card mt-2">
+                    <div class="card-header"><strong>Nuevo comentario</strong></div>
+                    <div class="card-body">
+                        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__EventCommentAntiForgeryToken" })) {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" id="userId" value="@userId" />
+                            <input type="hidden" id="eventId" value="@Model.EventInfo.Id" />
+                            <div class="row">
+                                <div class="col-11">
+                                    <textarea class="form-control" id="commentMessage" name="textarea-input" rows="5" placeholder="Escriba aquí.."></textarea>
+                                </div>
+                                <div class="col-1 alig">
+                                    <a href="#" class="btn btn btn-info float-right" onclick="SendComment()" id="send-comment-button">Enviar</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/events.js"></script>
+}
+
+
+

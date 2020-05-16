@@ -1,0 +1,68 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form id="account" method="post">
+                <div class="card-group">
+                    <div class="card p-4">
+                        <div class="card-body">
+                            <h1>Iniciar Sesión</h1>
+                            <p class="text-muted">Login</p>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-user-circle"></i></span>
+                                        </div>
+                                        <input asp-for="Input.Username" class="form-control" placeholder="Nombre usuario.." />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <span asp-validation-for="Input.Username" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="input-group mb-4">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                </div>
+                                <input asp-for="Input.Password" class="form-control" placeholder="Contraseña.." />
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <button type="submit" class="btn btn-primary px-4">Entrar</button>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <a class="btn btn-link px-0" id="forgot-password" asp-page="./ForgotPassword">Sin contraseña?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
+                        <div class="card-body text-center">
+                            <div>
+                                <h2>Sign up</h2>
+                                <p>¿Todavía no tienes tu cuenta?</p>
+                                <a class="btn btn-lg btn-outline-light mt-3" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Regístrate ahora!</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
